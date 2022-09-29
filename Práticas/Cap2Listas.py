@@ -37,7 +37,7 @@ print("dias: ", dias, "horas: ", horas, "minutos: ", minutos, "segundos: ", segs
 from math import sqrt
 
 values = []
-num_values = int(input("Quantos números tem a sua sequência? Resposta: "))
+num_values = float(input("Quantos números tem a sua sequência? Resposta: "))
 i = 0
 
 while i < num_values :
@@ -127,6 +127,7 @@ while True:
 
 ''' Exercicio 9
 
+#Forma não suposta ainda
 juntos = ""
 
 while True:
@@ -141,6 +142,20 @@ while True:
 
 print("Os digitos que introduziu formam o número ", juntos)
 
+'''
+'''
+#Forma suposta
+
+num_final = 0
+
+while True:
+    x = int(input("Escreva um dígito: "))
+    if(x == -1):
+        break
+    else:
+        num_final = num_final*10 + x
+
+print("O número final é ", num_final)
 '''
 #---------------------------------------------------
 
@@ -163,7 +178,7 @@ else:
 
 #--------------------------------------------------
 
-#''' Exercicio 11
+''' Exercicio 11
 
 # Matemáticamente
 x = int(input("Escreva um número inteiro positivo: "))
@@ -176,8 +191,104 @@ else:
         x = x // 10
     print("Número inverso: ", num)
 
-# Com Strings
+'''
 
-#'''
+#-------------------------------------------------
 
-#
+''' Exercicio 12
+
+ #Solução pessoal
+def fatorial(n):
+    fat = 1
+    while n != 1:
+        fat *= n
+        n -= 1
+    return fat
+
+
+x = int(input("Introduza um valor x: "))
+n = int(input("Introduza um valor n: "))
+i=1
+soma = 1
+
+while i <= n:
+    soma += ((x**i)/fatorial(i))
+    i += 1
+
+print("O valor da soma é: ", soma)
+ 
+
+#Solução suposta
+x = int(input("Introduza um valor x: "))
+n = int(input("Introduza um valor n: "))
+i=1
+soma = 1
+termo_anterior = 1
+
+while i<= n:
+    termo_anterior = termo_anterior*(x/i) #o proximo termo anterior será o termo atual 
+    soma += termo_anterior
+    i+=1
+
+print("O valor da soma é: ", soma)
+
+'''
+
+# -----------------------------------------------
+
+''' #Exercicio 13
+
+num = int(input("Escreva um número para eu escrever a tabuada da multiplicação\n\
+Num -> "))
+
+i=1
+while i <= 10:
+    print(num, " x ",i, " = ", num*i)
+    i+=1
+'''
+
+# -----------------------------------------------
+
+''' Exercicio 14
+
+x = int(input("Introduza um número inteiro: "))
+soma = 0
+
+while x != 0:
+    soma += x%10
+    x = x // 10
+
+print("A soma dos seus dígitos é ", soma)
+
+
+'''
+#-------------------------------------------------
+
+''' Exercicio 15
+
+num = 0
+dig = int(input("Introduza um dígito: "))
+
+while dig > -1:
+    num = num*10 + dig
+    dig = int(input("Introduza um dígito: "))
+
+print("O número inteiro formado por esses dígitos é: ", num)
+'''
+
+#---------------------------------------------------
+
+''' Exercicio 16
+metade1 = int(input("Escreva um número\n-> "))
+res = metade1
+
+while(metade1 > 0):
+    digito = metade1%10
+    res = res*10 + digito
+    metade1 = metade1 // 10
+
+print(res)
+
+'''
+
+#----------------------------------------------------
