@@ -292,3 +292,99 @@ print(res)
 '''
 
 #----------------------------------------------------
+
+''' Exercicio 17 (Nota: Não era claro no enunciado se o conjunto de números 
+inteiros era suposto ser separado, assim, ou um inteiro muito grande em que cada digito era um nota)
+
+
+nota = 0
+num_positivas = 0
+
+alunos = int(input("Quantos alunos tem a turma?\nResposta: "))
+i=0
+
+while i<alunos:
+    nota = int(input("Introduza um nota: "))
+    if nota >= 10:
+        num_positivas+=1
+    i+=1
+
+print("Dos ", alunos, " alunos ", num_positivas," tiveram nota positiva\n\
+    Percentagem de notas positivas: ", (num_positivas/alunos)*100)
+
+'''
+#------------------------------------------------------------------------------------
+
+''' Exercicio 18
+
+num = int(input("Escreva um número inteiro: "))
+zeros = 0
+
+prev_dig = num % 10
+num = num // 10
+
+while num != 0:
+    dig = num % 10
+    if prev_dig == 0 and dig == 0:
+        zeros += 1
+    prev_dig = dig
+    num = num // 10
+
+print("O numero tem ", zeros, " zeros seguidos")
+
+'''
+#------------------------------------------------------------------------------------------------
+
+''' Exercicio 19 -- Para se fazer sem array com nomes teria que fzr cada iteração sem usar while
+
+euros = float(input("Introduza uma quantia de dinheiro: "))
+euros = int(round(euros * 100,2))
+
+
+#A passagem é sempre 50,20,10,5,2,1 em euros e centimos
+quant50 = 5000
+quant20 = 2000
+quant10 = 1000
+
+nomes50=["Notas de 50e","Notas de 5e", "Moedas de 50c", "Moedas de 5c"]
+nomes20=["Notas de 20e","Moedas de 2e","Moedas de 20c", "Moedas de 2c"]
+nomes10=["Notas de 10e","Moedas de 1e","Moedas de 10c", "Moedas de 1c"]
+i = 0
+
+
+print("A sua quantia equivale a ")
+while euros != 0: #funciona bem
+    
+    if((euros // quant50) != 0):
+        print(euros//quant50, nomes50[i])
+    euros = euros % quant50
+    quant50 = quant50//10
+
+    if((euros // quant20) != 0):
+        print(euros//quant20, nomes20[i])
+    euros = euros % quant20
+    quant20 = quant20//10
+
+    if((euros // quant10) != 0):
+        print(euros//quant10, nomes10[i])
+    euros = euros % quant10
+    quant10 = quant10 // 10
+
+    i+=1
+
+
+'''
+#-------------------------------------------------------------------------------------
+
+#'''  Exercicio 20
+
+i=1
+j = 0
+while i<=9:
+    j+=i
+    print(j, " x 8 + ",i," = ", j*8+i)
+    j *= 10
+    i+=1
+
+
+#'''
