@@ -19,9 +19,6 @@ def soma_ar(n):
 print(soma_ar(10))
 '''
 
-#''' Igual ao anterior mas de acordo com matéria
-
-
 ''' Exemplos de uso de erro/excepções
 
 x = eval(input("Introduza um número: "))

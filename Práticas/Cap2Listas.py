@@ -176,6 +176,24 @@ else:
 
 '''
 
+'''Exercicio 10 (numericamente)
+
+x = int(input("Introduza um número inteiro positivo: "))
+
+if x <=0:
+    print("O seu número não é inteiro positivo.")
+else:
+   soma = 0
+   while(x != 0):
+        dig = x % 10
+        if(dig % 2 != 0):
+            soma += dig
+        x = x // 10
+    
+   print("A soma dos digitos impares é ", soma)
+
+'''
+
 #--------------------------------------------------
 
 ''' Exercicio 11
@@ -376,7 +394,7 @@ while euros != 0: #funciona bem
 '''
 #-------------------------------------------------------------------------------------
 
-#'''  Exercicio 20
+'''  Exercicio 20
 
 i=1
 j = 0
@@ -387,4 +405,4 @@ while i<=9:
     i+=1
 
 
-#'''
+'''
