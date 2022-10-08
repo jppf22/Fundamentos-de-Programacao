@@ -237,3 +237,24 @@ print(descodifica('acebd'))
 print(descodifica('acegikmobdfhjlnp'))
         
 '''
+
+#---------------------------------------------- Exercicios do Livro -------------------------------------------------
+
+''' Exercicio 1
+
+def duplica(tp):
+    res = ()
+    for i in tp:
+        res += (i,i)
+    return res
+
+print(duplica((1,2,3)))
+print(duplica(('a',3,'2',2.0)))
+
+'''
+
+#''' Exercicio 2
+
+
+
+#'''
