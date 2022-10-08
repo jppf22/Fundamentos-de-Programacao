@@ -1,3 +1,4 @@
+
 ''' Exercicio 1
 
 def cinco(x):
@@ -5,6 +6,7 @@ def cinco(x):
 print(cinco(5))
 
 '''
+#---------------------------------------------------------------------------------------
 
 ''' Exercicio 2
 
@@ -14,6 +16,7 @@ def dias(horas):
 #print(dias(48))
 #print(dias(10))
 '''
+#-----------------------------------------------------------------------------------------
 
 ''' Exericio 3 e 4
 
@@ -31,6 +34,7 @@ def area_coroa(r1,r2):
 print(area_coroa(1,2))
 
 '''
+#----------------------------------------------------------------------------------------
 
 ''' Exericio 5 e 6
 
@@ -61,5 +65,53 @@ print(dias_mes('jan',2017))
 print(dias_mes('feb',2016))
 #print(dias_mes('MAR',2017))    
 '''        
+#--------------------------------------------------------------------------
+
+''' Exercicio 7
+# A)
+
+def valor(q,j,n):
+
+    #q - quantida depositada (inteiro pos)
+    #j - taxa de juros (entre 0 e 1, abertos)
+    #n - número de anos (real)
+    #return - valor do depósito ao fim de n anos
+
+
+    # Value cheking
+    if(type(q) != int):
+        raise TypeError("valor: q não é um inteiro")
+    if(q <= 0):
+        raise ValueError("valor: q não é positivo")
+    if not(0 < j < 1):
+        raise ValueError("value: j não está entre 0 e 1")
+    if(type(n) != float and type(n) != int):
+        raise TypeError("value: n não é um real")
+
+    return q*((1+j)**n)
+
+print(valor(100,0.03,4))
+#Erros
+#valor(-1,0.01,4)
+#valor(3,2,1)
+#valor(4,0.05,'a')
+
+# B)
+
+def duplicar(q,j):
+    dobro = q*2
+    i=1
+    while True:
+        if(valor(q,j,i) >= dobro):
+            return i
+        i+=1
+
+print(duplicar(100,0.03))
+'''
+#---------------------------------------------------------------------------
+
+#''' Exercicio 8
+
+def serie_geom(r,n)
 
 #'''
