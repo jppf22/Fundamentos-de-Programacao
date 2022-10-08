@@ -65,8 +65,6 @@ print(dias_mes('jan',2017))
 print(dias_mes('feb',2016))
 #print(dias_mes('MAR',2017))    
 '''        
-<<<<<<< HEAD
-=======
 #--------------------------------------------------------------------------
 
 ''' Exercicio 7
@@ -117,4 +115,3 @@ print(duplicar(100,0.03))
 def serie_geom(r,n)
 
 #'''
->>>>>>> 16d24229ce20a331c54ef25491e5db3109961f24
