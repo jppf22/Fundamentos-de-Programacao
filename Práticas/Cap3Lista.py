@@ -204,3 +204,72 @@ print(misterio(131))
 #print(misterio(1001))
 
 '''
+
+
+# ------------------------- CAP3 - Exercicios do Manual ------------------------------------------------------------------
+
+''' Exercicio 3
+
+from math import sqrt
+
+def primo(num):
+    if(num == 1):
+        return False
+
+    max_apro = int(sqrt(num))
+    for i in range(2,max_apro+1):
+        if(num % i == 0): #se tuver algum divisor
+            return False
+
+    return True
+
+print(primo(23))
+print(primo(43))
+print(primo(16))
+
+
+#Exercicio 4
+
+def n_primo(num):
+    i=0
+    primos_antes = 0
+    while primos_antes < num:
+        i += 1
+        if(primo(i) is True):
+            primos_antes += 1
+            #print(i)
+    return i
+
+print(9)
+'''
+
+# -----------------------------------------
+
+''' Exercicio 5
+
+def triangular(num):
+    if(num == 0):
+        return False
+    
+    soma = 0
+    i=0
+    while soma < num:
+        soma = 0
+        j = 0
+        while j <= i:
+            soma += j
+            j+=1
+        i+=1
+
+        if(soma == num):
+            return True
+        
+    return False
+
+print(triangular(6))
+print(triangular(8))
+'''
+
+#---------------------------------------------------
+
+# Exercicio 6 -- X pode tomar valor real ou apenas inteiro? (Muda completamente a resolução)
