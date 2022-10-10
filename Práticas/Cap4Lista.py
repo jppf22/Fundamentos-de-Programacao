@@ -208,12 +208,9 @@ print(codifica('abcdefghijklmnop'))
 def descodifica(str):
     len_pares = 0
     len_impares = 0
-    if(len(str) % 2 == 0):
-        len_pares = len(str) // 2
-        len_impares = len_pares
-    else:
-        len_impares = len(str) // 2
-        len_pares = len(str)-len_impares
+    
+    len_impares = len(str) // 2
+    len_pares = len(str)-len_impares
         
     pares = str[0:len_pares]
     impares = str[len_pares:len(str)]
