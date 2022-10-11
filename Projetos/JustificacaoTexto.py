@@ -47,11 +47,45 @@ def corta_texto(string_clean, width):
 
 
 def insere_espacos(string_clean, width):
-    pass
+
+    def num_whitespaces(dif,whitespaces_left): #used to figure out how many whitespaces (not counting the originals) must be put between each word, except the last
+        if(whitespaces_left == 1):
+            return dif
+        
+        return int(dif//whitespaces_left) + (dif%whitespaces_left > 0)
+
+    def get_whitespaces(num):
+        res = ''
+        while num != 0:
+            res += ' '
+            num -= 1
+        return res
+
+    if(len(string_clean.split()) >= 2):
+       dif = width - len(string_clean) #this amount will be filled by whitespaces
+       whitespaces = string_clean.count(' ')
+       whitespaces_per_word = () #this tuple specifies how many whitespaces will be after each word, except the last (a 'clean string' ends with a word)
+
+       while whitespaces != 0: 
+            whitespaces_here = num_whitespaces(dif,whitespaces)
+            whitespaces_per_word += (whitespaces_here,)
+            dif -= whitespaces_here
+            whitespaces -= 1
+
+       words = string_clean.split()
+       string_final = ""
+       for i in range(0,len(words)-1): #if we used only len(word), whitespaces_per_word would go out of range
+            string_final = string_final + words[i] + get_whitespaces(whitespaces_per_word[i]+1)
+
+       return string_final + words[len(words)-1]
+        
+    else: 
+        return string_clean.ljust(width,' ')
+
 
 def justifica_texto(string,width):
     pass
 
-print(limpa_texto("\v    \t Fundamentos     \n\t \v     da   \f      Programacao\n          "))
-print(corta_texto("Fundamentos da Programacao",15))
-
+#print(limpa_texto("\v    \t Fundamentos     \n\t \v     da   \f      Programacao\n          "))
+#print(corta_texto("Fundamentos da Programacao",15))
+print(insere_espacos("Ola eu sou bababoi",15))
