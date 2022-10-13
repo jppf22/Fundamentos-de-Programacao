@@ -27,7 +27,6 @@ class TestPublicJustificarTextos:
             'Together they are powerful beyond imagination.              ')
         assert ref == justifica_texto(cad, 60)
 
-  
 '''
 class TestPublicMetodoHondt:
 
