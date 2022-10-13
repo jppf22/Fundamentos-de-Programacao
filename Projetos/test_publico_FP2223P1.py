@@ -25,12 +25,11 @@ class TestPublicJustificarTextos:
         ref = ('Computers  are  incredibly  fast, accurate and stupid. Human',
             'beings   are  incredibly  slow  inaccurate,  and  brilliant.',
             'Together they are powerful beyond imagination.              ')
-            
         assert ref == justifica_texto(cad, 60)
 
   
-
-''' class TestPublicMetodoHondt:
+'''
+class TestPublicMetodoHondt:
 
     def test_1(self):
 
@@ -102,5 +101,5 @@ class TestPublicSistemasLineares:
         ref = (-4.0, -1.0, 1.0)
             
         assert equal(resolve_sistema(A4, c4, 1e-20), ref)
-
 '''
+        

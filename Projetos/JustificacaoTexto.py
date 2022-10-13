@@ -106,9 +106,10 @@ def justifica_texto(string,width):
 #print(limpa_texto("\v    \t Fundamentos     \n\t \v     da   \f      Programacao\n          "))
 #print(corta_texto("Fundamentos da Programacao",15))
 
-cad = ('Os Lusíadas é\t uma obra de poesia épica do escritor português Luís Vaz de Camões, \
+''' cad = ('Os Lusíadas é\t uma obra de poesia épica do escritor português Luís Vaz de Camões, \
 a primeira epopeia \nportuguesa         publicada em versão impressa. Provavelmente iniciada em 1556 e concluída em 1571, \
 foi publicada em Lisboa em 1572          no período literário do Classicismo, ou Renascimento tardio, três anos após o regresso\
  do autor do Oriente, via \vMoçambique.')
 
 for l in justifica_texto(cad,10): print(l)
+'''
