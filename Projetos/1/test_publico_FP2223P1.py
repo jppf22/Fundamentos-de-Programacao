@@ -25,6 +25,7 @@ class TestPublicJustificarTextos:
         ref = ('Computers  are  incredibly  fast, accurate and stupid. Human',
             'beings   are  incredibly  slow  inaccurate,  and  brilliant.',
             'Together they are powerful beyond imagination.              ')
+            
         assert ref == justifica_texto(cad, 60)
 
   
