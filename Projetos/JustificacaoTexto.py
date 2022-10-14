@@ -64,6 +64,7 @@ def insere_espacos(string_clean, width):
     if(len(string_clean.split()) >= 2):
        dif = width - len(string_clean) #this amount will be filled by whitespaces
        whitespaces = string_clean.count(' ')
+       
        whitespaces_per_word = () #this tuple specifies how many whitespaces will be after each word, except the last (a 'clean string' ends with a word)
 
        while whitespaces != 0: 
@@ -84,8 +85,32 @@ def insere_espacos(string_clean, width):
 
 
 def justifica_texto(string,width):
-    pass
+
+    if(len(string)==0 or width <= 0):
+        raise ValueError("justifica_texto: argumentos invalidos")
+
+
+    string_toparse = limpa_texto(string)
+    string_tuple = ()
+    
+    while string_toparse != "":
+        string_temp,string_toparse = corta_texto(string_toparse,width)
+        if(string_toparse == ""):
+            string_tuple += (string_temp.ljust(width,' '),)
+        else:
+            string_tuple += (insere_espacos(string_temp,width),)
+    
+    return string_tuple
+
 
 #print(limpa_texto("\v    \t Fundamentos     \n\t \v     da   \f      Programacao\n          "))
 #print(corta_texto("Fundamentos da Programacao",15))
-print(insere_espacos("Ola eu sou bababoi",15))
+
+''' 
+cad = ('Os Lusíadas é\t uma obra de poesia épica do escritor português Luís Vaz de Camões, \
+a primeira epopeia \nportuguesa         publicada em versão impressa. Provavelmente iniciada em 1556 e concluída em 1571, \
+foi publicada em Lisboa em 1572          no período literário do Classicismo, ou Renascimento tardio, três anos após o regresso\
+ do autor do Oriente, via \vMoçambique.')
+
+for l in justifica_texto(cad,10): print(l)
+'''
