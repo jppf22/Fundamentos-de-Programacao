@@ -60,3 +60,26 @@ for item in sorted(n_d.items(), key=compare ,reverse=True): #the comparison will
 
 # Crivo de Erastótenes
 
+from math import sqrt
+
+def crivo(n):
+    lista = [x for x in range(2,n+1)] # <=> lista = list(rang(2,n+1))
+    p = lista[0]
+    i=0
+    while p <= sqrt(n):
+        j = i+1
+        while j < len(lista):
+            if(lista[j] % p == 0): #Nota: quando acabmos o elemento atual,
+                # o proximo vai ocupar o seu indice, logo não é necessário incrementar
+
+                del(lista[j]) #will delete any numbers which have more than 2 divisors
+            else:
+                j += 1 #se for primo temos que incrementar jota
+        i+=1
+        p=lista[i]
+    
+    return lista
+
+print(crivo(100000))
+
+
