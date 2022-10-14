@@ -1,5 +1,5 @@
 import pytest
-from JustificacaoTexto import *
+from Projeto import *
 
 class TestPublicJustificarTextos:
 
@@ -26,6 +26,7 @@ class TestPublicJustificarTextos:
             'beings   are  incredibly  slow  inaccurate,  and  brilliant.',
             'Together they are powerful beyond imagination.              ')
         assert ref == justifica_texto(cad, 60)
+    
 
 '''
 class TestPublicMetodoHondt:

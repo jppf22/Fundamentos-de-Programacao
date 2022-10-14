@@ -7,6 +7,9 @@ def limpa_texto(string):
 
     By 'blank characters' we define '\t','\n','\v','\f',
     '\r' and ' '
+
+    string -> str
+    return -> str
     '''
 
     blank_characters = ('\t','\n','\v','\f','\r')
@@ -26,6 +29,10 @@ def corta_texto(string_clean, width):
     Returns two 'clean' substrings of string_clean:
         - One containing each full word since the beginning of string_clean, including spaces, until reaching a maximum length that's equal to the width
         - The other containing what's left
+    
+    string_clean -> str
+    width -> int
+    return -> str
     '''
 
     def isChar(char):
@@ -47,6 +54,14 @@ def corta_texto(string_clean, width):
 
 
 def insere_espacos(string_clean, width):
+    '''
+    Returns a string that fits the given width by adding spaces between each words,
+    if it has more than 1 word, or adds spaces to the end of the string, if otherwise.
+
+    string_clean -> str
+    width -> int
+    return -> str
+    '''
 
     def num_whitespaces(dif,whitespaces_left): #used to figure out how many whitespaces (not counting the originals) must be put between each word, except the last
         if(whitespaces_left == 1):
@@ -85,6 +100,9 @@ def insere_espacos(string_clean, width):
 
 
 def justifica_texto(string,width):
+    '''
+    Returns a justified
+    '''
 
     if(len(string)==0 or width <= 0):
         raise ValueError("justifica_texto: argumentos invalidos")
@@ -114,3 +132,4 @@ foi publicada em Lisboa em 1572          no período literário do Classicismo, 
 
 for l in justifica_texto(cad,10): print(l)
 '''
+
