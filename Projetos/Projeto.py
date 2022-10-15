@@ -70,7 +70,7 @@ def insere_espacos(string_clean, width):
         return int(dif//whitespaces_left) + (dif%whitespaces_left > 0)
 
     def get_whitespaces(num):
-        res = ''
+        res = ' '
         while num != 0:
             res += ' '
             num -= 1
@@ -91,7 +91,7 @@ def insere_espacos(string_clean, width):
        words = string_clean.split()
        string_final = ""
        for i in range(0,len(words)-1): #if we used only len(word), whitespaces_per_word would go out of range
-            string_final = string_final + words[i] + get_whitespaces(whitespaces_per_word[i]+1)
+            string_final = string_final + words[i] + get_whitespaces(whitespaces_per_word[i])
 
        return string_final + words[len(words)-1]
         
