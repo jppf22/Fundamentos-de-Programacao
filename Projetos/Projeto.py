@@ -14,7 +14,7 @@ def limpa_texto(string):
 
     blank_characters = ('\t','\n','\v','\f','\r')
 
-    for i in blank_characters: #Replaces any blank_characters, except ' ', with a whitespace ' '
+    for i in blank_characters: 
         string = string.replace(i,' ')
 
     string = string.split() #With no arguments, Python will use ' ' as the delimiter and consider any group of whitespaces as a single one
@@ -32,18 +32,18 @@ def corta_texto(string_clean, width):
     
     string_clean -> str
     width -> int
-    return -> str
+    return -> tuple(str,str)
     '''
 
     def isChar(char):
         return (char != ' ')
 
-    if(len(string_clean) <= width): #String is smaller or equal to the width - return full string
+    if(len(string_clean) <= width):
         return (string_clean, "")
 
-    sub_string1 = string_clean[:width] #String is bigger than the width
+    sub_string1 = string_clean[:width] 
     while width != 0:
-        #If substring1 has an incomplete word -> we need to make it shorter until there are only full words in it(since its maximum len is width)
+        #If substring1 has an incomplete word -> we need to make it shorter until there are only full words in it(since its maximum length is width)
         if(isChar(string_clean[width-1]) and isChar(string_clean[width])):
             sub_string1 = string_clean[:width-1]
         else:
@@ -101,10 +101,14 @@ def insere_espacos(string_clean, width):
 
 def justifica_texto(string,width):
     '''
-    Returns a justified
+    Returns a justified text that fits the given width
+    
+    string -> str
+    width -> int
+    return -> tuple (made up of str elements)
     '''
 
-    if(len(string)==0 or width <= 0):
+    if(len(string)==0 or width <= 0 or type(string) != str or type(width) != int):
         raise ValueError("justifica_texto: argumentos invalidos")
 
 
