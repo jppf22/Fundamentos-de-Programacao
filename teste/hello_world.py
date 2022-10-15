@@ -1,7 +1,10 @@
 
-s = input("Introduza um nome: ")
-n = input("Introduza uma seccao do dia: ")
 
-print(f"Hello {s}, how was your {n}?")
+s = int(input())
 
+n =('h','m','s')
+
+for i in range(len(n)):
+    print(n[i], ':', s//60, end=' ')
+    s = s % 60
 

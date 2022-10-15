@@ -213,9 +213,16 @@ def obtem_partidos(info_about_elections):
     info_about_elections -> dict
     return -> list
     '''
-   
+    names = []
+    for election_circle in info_about_elections.values():
+        votes_circle = list(dict(election_circle).values())
+        parties_circle = votes_circle[1]
+        names_circle = list(parties_circle.keys())
+        for i in names_circle:
+            if(i not in names):
+                names.append(i)
     
-
+    return sorted(names)
 
 def obtem_resultados_eleicoes():
     pass
