@@ -45,7 +45,7 @@ class TestPublicMetodoHondt:
     def test_2(self):
         ref = ['A', 'B', 'A', 'C', 'A', 'B', 'D']
         assert ref == atribui_mandatos({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7)
-    '''
+    
     def test_3(self):
         info = {
             'Endor':   {'deputados': 7, 
@@ -58,7 +58,7 @@ class TestPublicMetodoHondt:
         ref = ['A', 'B', 'C', 'D', 'E']
         
         assert ref == obtem_partidos(info)
-
+    '''
     def test_4(self):
         info = {
             'Endor':   {'deputados': 7, 

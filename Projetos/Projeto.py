@@ -184,6 +184,7 @@ def atribui_mandatos(votes_per_party,num_representatives):
 
     quotients_per_party = calcula_quocientes(votes_per_party,num_representatives)
     representatives_party = []
+
     for i in range(num_representatives):
         biggest_quotient_left = biggest_quotient(quotients_per_party)
         winner_parties = [i for i in quotients_per_party if biggest_quotient_left in quotients_per_party[i]]
@@ -204,11 +205,30 @@ def atribui_mandatos(votes_per_party,num_representatives):
     return representatives_party
 
 
-def obtem_partidos():
-    pass
+def obtem_partidos(info_about_elections):
+    '''
+    Returns a list, in alfabetic order, with the name of each politcal party
+    that participated in these elections-
+
+    info_about_elections -> dict
+    return -> list
+    '''
+   
+    
+
 
 def obtem_resultados_eleicoes():
     pass
 
 #print(calcula_quocientes({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7))
-print(atribui_mandatos({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7))
+#print(atribui_mandatos({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7))
+
+info = {
+            'Endor':   {'deputados': 7, 
+                        'votos': {'A':12000, 'B':7500, 'C':5250, 'D':3000}},
+            'Hoth':    {'deputados': 6, 
+                        'votos': {'A':9000, 'B':11500, 'D':1500, 'E':5000}},
+            'Tatooine': {'deputados': 3, 
+                        'votos': {'A':3000, 'B':1900}}}
+
+print(obtem_partidos(info))
