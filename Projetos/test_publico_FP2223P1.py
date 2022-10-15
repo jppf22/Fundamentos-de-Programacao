@@ -28,7 +28,7 @@ class TestPublicJustificarTextos:
         assert ref == justifica_texto(cad, 60)
     
 
-'''
+
 class TestPublicMetodoHondt:
 
     def test_1(self):
@@ -41,11 +41,11 @@ class TestPublicMetodoHondt:
         hyp = calcula_quocientes({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7)
         
         assert ref == hyp
-
+    
     def test_2(self):
         ref = ['A', 'B', 'A', 'C', 'A', 'B', 'D']
         assert ref == atribui_mandatos({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7)
-
+    '''
     def test_3(self):
         info = {
             'Endor':   {'deputados': 7, 

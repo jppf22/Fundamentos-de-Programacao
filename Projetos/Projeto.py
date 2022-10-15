@@ -1,4 +1,5 @@
 
+# Exericio 1 ---------------------------------------------------------------
 def limpa_texto(string):
     '''
     Returns a 'clean' string, that is, 
@@ -65,18 +66,14 @@ def insere_espacos(string_clean, width):
     '''
 
     def num_whitespaces(dif,whitespaces_left):
-        '''
-        Returns how many extra whitespaces must be put between each word
-        '''
+        '''Returns how many extra whitespaces must be put between each word'''
         if(whitespaces_left == 1):
             return dif
         
         return int(dif//whitespaces_left) + (dif%whitespaces_left > 0)
 
     def get_whitespaces(num):
-        '''
-        Returns a string made up of the necessary number of ' ' after a given word position
-        '''
+        '''Returns a string made up of the necessary number of ' ' after a given word position'''
         res = ' ' 
         while num != 0:
             res += ' '
@@ -144,3 +141,74 @@ foi publicada em Lisboa em 1572          no período literário do Classicismo, 
 for l in justifica_texto(cad,10): print(l)
 '''
 
+# Exercicio 2 ---------------------------------------------------------------------
+def calcula_quocientes(votes_per_party,num_representatives):
+    '''
+    Returns a dictionary whose keys correspond to political parties
+    and values correspond to the quotients, in descending order, 
+    according to the Hondt method
+
+    votes_per_party -> dict
+    num_representatives -> int
+    return -> dict{str:list}
+    '''
+
+    quotients_per_party = votes_per_party.copy()
+    for i in range(len(quotients_per_party)):
+        quotients = [list(quotients_per_party.values())[i]/x for x in range(1,num_representatives+1)]
+        quotients_per_party[list(quotients_per_party.keys())[i]] = quotients
+    return quotients_per_party
+
+    
+
+def atribui_mandatos(votes_per_party,num_representatives):
+    '''
+    Returns a list with a length equal to the number of representatives
+    in which element corresponds to the political party that got the
+    representative at that position (equal to the index+1)
+
+    votes_per_party -> dict
+    num_representatives -> int
+    return -> list[str]
+    '''
+    def biggest_quotient(quotients_per_party):
+        biggest = 0
+        for i in quotients_per_party.values():
+            for j in i:
+                if(j > biggest):
+                    biggest = j
+        return biggest
+
+    def which_has_less_votes(party1):
+        return votes_per_party[party1]
+
+    quotients_per_party = calcula_quocientes(votes_per_party,num_representatives)
+    representatives_party = []
+    for i in range(num_representatives):
+        biggest_quotient_left = biggest_quotient(quotients_per_party)
+        winner_parties = [i for i in quotients_per_party if biggest_quotient_left in quotients_per_party[i]]
+
+        if(len(winner_parties) == 1):
+            representatives_party.append(winner_parties[0])
+        else: #if there is a draw
+            winner_parties.sort(key=which_has_less_votes)
+            for i in winner_parties:
+                representatives_party.append(i)
+                if(len(representatives_party) == num_representatives):
+                    return representatives_party
+
+        for i in quotients_per_party:
+            if(biggest_quotient_left in quotients_per_party[i]): 
+                quotients_per_party[i].remove(biggest_quotient_left)
+
+    return representatives_party
+
+
+def obtem_partidos():
+    pass
+
+def obtem_resultados_eleicoes():
+    pass
+
+#print(calcula_quocientes({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7))
+print(atribui_mandatos({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7))
