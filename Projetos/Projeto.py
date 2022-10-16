@@ -132,14 +132,14 @@ def justifica_texto(string,width):
 #print(limpa_texto("\v    \t Fundamentos     \n\t \v     da   \f      Programacao\n          "))
 #print(corta_texto("Fundamentos da Programacao",15))
 
-''' 
+
 cad = ('Os Lusíadas é\t uma obra de poesia épica do escritor português Luís Vaz de Camões, \
 a primeira epopeia \nportuguesa         publicada em versão impressa. Provavelmente iniciada em 1556 e concluída em 1571, \
 foi publicada em Lisboa em 1572          no período literário do Classicismo, ou Renascimento tardio, três anos após o regresso\
  do autor do Oriente, via \vMoçambique.')
 
-for l in justifica_texto(cad,10): print(l)
-'''
+for l in justifica_texto(cad,20): print(l)
+
 
 # Exercicio 2 ---------------------------------------------------------------------
 def calcula_quocientes(votes_per_party,num_representatives):
@@ -224,8 +224,31 @@ def obtem_partidos(info_about_elections):
     
     return sorted(names)
 
-def obtem_resultados_eleicoes():
-    pass
+def obtem_resultados_eleicoes(info_about_elections):
+    '''
+    Returns a list with the results of the elections per political party
+
+    info_about_elections -> dict
+    return -> list[tuple(str,int,int)]
+    '''
+
+    def obtem_votos(party_name):
+        pass
+
+    def which_has_more_representation(info_about_party):
+        return info_about_party[1],info_about_party[2]
+    
+    if(type(info_about_elections) != dict):
+        raise ValueError("obtem_resultados_eleicoes: argumento invalido")
+
+    parties = obtem_partidos(info_about_elections)
+    res = []
+    for i in range(len(parties)):
+        votos = obtem_votos(parties[i])
+        res.append((parties[i],atribui_mandatos(votos),votos))
+    
+    return res.sort(key=which_has_more_representation,reverse=True)
+
 
 #print(calcula_quocientes({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7))
 #print(atribui_mandatos({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7))
