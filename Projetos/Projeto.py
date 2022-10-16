@@ -36,7 +36,7 @@ def corta_texto(string_clean, width):
     return -> tuple(str,str)
     '''
 
-    def isChar(char):
+    def isChar(char): #substituir por builtin
         return (char != ' ')
 
     if(len(string_clean) <= width):
@@ -49,6 +49,9 @@ def corta_texto(string_clean, width):
             sub_string1 = string_clean[:width-1]
         else:
             return (limpa_texto(sub_string1),limpa_texto(string_clean[width:]))
+            # limpa_texto(sub_string1[:width-1])
+            #se tem espaço ? a : b
+            # ternary operator
         width -= 1
     
     return("",string_clean) #No full word fits the given width
@@ -80,18 +83,38 @@ def insere_espacos(string_clean, width):
             num -= 1
         return res
 
+#
+#    string[] resultado final = string[width final que tu queres]
+#    int pos = 0
+
+#    int maxespacosnovos = X;
+#    int espaçoCada = calcula espaços entre palavras (espacos total/espacos)
+#    int restodadivisao = Y
+#    for  int i = 0 ; i < string_clean.length(); i++
+#        if string_clean[i] == espaco
+#          for int j = i ; j < espaçoCada ; j++
+#            resultados[pos++] = espaço
+#          if (restoDaDivisao > 0)
+#            resultado[pos++] = espaço
+#            restoDaDivisao--  
+#        else
+#          resultado[pos++] = string_clean[i];
+#
+#
+#
+
     if(len(string_clean.split()) >= 2):
        dif = width - len(string_clean) 
        whitespaces_original = string_clean.count(' ') # amount of whitespaces on the original string
        
        whitespaces_per_word = () #this tuple specifies how many extra whitespaces will be after each word
 
-       while whitespaces_original != 0: 
+       while whitespaces_original != 0:  #----------------- Aqui dá para não chamar num_whitespaces 3 vezes se colocarmos uma condição que soma se ainda houver resto da divisão dif//whitespaces_original
             whitespaces_here = num_whitespaces(dif,whitespaces_original)
             whitespaces_per_word += (whitespaces_here,)
             dif -= whitespaces_here
             whitespaces_original -= 1
-
+       
        words = string_clean.split()
        string_final = ""
        for i in range(0,len(words)-1): #the last word isn't followed by a whitespace there we use len(words)-1
@@ -249,13 +272,15 @@ def obtem_resultados_eleicoes(info_about_elections):
         for j in parties:
             seats_per_party = mandates.count(j)
             votes_per_party = votes[j]
-
+            votes_seats_per_party[j] += [0,0]
+        
             #------------------------------------------------------------
             votes_seats_per_party[j][0] += seats_per_party
             votes_seats_per_party[j][1] += votes_per_party
     res = [(x,y,z) for x in votes_seats_per_party for y in x[0] for z in x[1]]
  
     return res.sort(key=which_has_more_representation,reverse=True)
+    
 
 
 #print(calcula_quocientes({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7))
@@ -270,4 +295,4 @@ info = {
                         'votos': {'A':3000, 'B':1900}}}
 
 #print(obtem_partidos(info))
-print(obtem_resultados_eleicoes(info))
+#print(obtem_resultados_eleicoes(info))
