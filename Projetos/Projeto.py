@@ -232,8 +232,6 @@ def obtem_resultados_eleicoes(info_about_elections):
     return -> list[tuple(str,int,int)]
     '''
 
-    def obtem_votos(party_name):
-        pass
 
     def which_has_more_representation(info_about_party):
         return info_about_party[1],info_about_party[2]
@@ -242,11 +240,21 @@ def obtem_resultados_eleicoes(info_about_elections):
         raise ValueError("obtem_resultados_eleicoes: argumento invalido")
 
     parties = obtem_partidos(info_about_elections)
-    res = []
-    for i in range(len(parties)):
-        votos = obtem_votos(parties[i])
-        res.append((parties[i],atribui_mandatos(votos),votos))
-    
+    election_circles = list(info_about_elections.keys())
+    votes_seats_per_party = {} #format {party: [seats,votes]}
+    for i in election_circles: #estou a supor que as regras descritas no projeto são válidas para cada circulo eleitoral e não o conjunto
+        seats = info_about_elections[i]['deputados']
+        votes = info_about_elections[i]['votos']
+        mandates = atribui_mandatos(votes,seats)
+        for j in parties:
+            seats_per_party = mandates.count(j)
+            votes_per_party = votes[j]
+
+            #------------------------------------------------------------
+            votes_seats_per_party[j][0] += seats_per_party
+            votes_seats_per_party[j][1] += votes_per_party
+    res = [(x,y,z) for x in votes_seats_per_party for y in x[0] for z in x[1]]
+ 
     return res.sort(key=which_has_more_representation,reverse=True)
 
 
@@ -261,4 +269,5 @@ info = {
             'Tatooine': {'deputados': 3, 
                         'votos': {'A':3000, 'B':1900}}}
 
-print(obtem_partidos(info))
+#print(obtem_partidos(info))
+print(obtem_resultados_eleicoes(info))

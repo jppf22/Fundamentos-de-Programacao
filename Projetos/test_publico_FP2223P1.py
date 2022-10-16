@@ -58,7 +58,7 @@ class TestPublicMetodoHondt:
         ref = ['A', 'B', 'C', 'D', 'E']
         
         assert ref == obtem_partidos(info)
-    '''
+    
     def test_4(self):
         info = {
             'Endor':   {'deputados': 7, 
@@ -71,7 +71,7 @@ class TestPublicMetodoHondt:
         
         assert ref == obtem_resultado_eleicoes(info)
 
-
+'''
 class TestPublicSistemasLineares:
 
     def test_1(self):
