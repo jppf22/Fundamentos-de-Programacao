@@ -247,7 +247,7 @@ def obtem_partidos(info_about_elections):
     
     return sorted(names)
 
-def obtem_resultados_eleicoes(info_about_elections):
+def obtem_resultado_eleicoes(info_about_elections):
     '''
     Returns a list with the results of the elections per political party
 
@@ -257,10 +257,10 @@ def obtem_resultados_eleicoes(info_about_elections):
 
 
     def which_has_more_representation(info_about_party):
-        return info_about_party[1],info_about_party[2]
+        return (info_about_party[1],info_about_party[2])
     
     if(type(info_about_elections) != dict):
-        raise ValueError("obtem_resultados_eleicoes: argumento invalido")
+        raise ValueError("obtem_resultado_eleicoes: argumento invalido")
 
     parties = obtem_partidos(info_about_elections)
     election_circles = list(info_about_elections.keys())
@@ -269,17 +269,28 @@ def obtem_resultados_eleicoes(info_about_elections):
         seats = info_about_elections[i]['deputados']
         votes = info_about_elections[i]['votos']
         mandates = atribui_mandatos(votes,seats)
-        for j in parties:
+
+        for j in parties: #lógica certa mas falta tirar os partidos que não pertencem a um certo circulo eleitoral
+
+            if(j not in list(votes.keys())):
+                continue
+
             seats_per_party = mandates.count(j)
             votes_per_party = votes[j]
-            votes_seats_per_party[j] += [0,0]
-        
-            #------------------------------------------------------------
+            if(votes_seats_per_party.get(j) == None):
+                votes_seats_per_party[j] = [0,0]
             votes_seats_per_party[j][0] += seats_per_party
             votes_seats_per_party[j][1] += votes_per_party
-    res = [(x,y,z) for x in votes_seats_per_party for y in x[0] for z in x[1]]
+
+    res = list(votes_seats_per_party.items())
+
+    for i in range(len(res)):
+        res[i] = (res[i][0],res[i][1][0],res[i][1][1])
+
  
-    return res.sort(key=which_has_more_representation,reverse=True)
+    #return res.sort(key=which_has_more_representation,reverse=True)
+    res.sort(key=lambda x:(x[1],x[2]),reverse=True)
+    return res
     
 
 
@@ -295,4 +306,4 @@ info = {
                         'votos': {'A':3000, 'B':1900}}}
 
 #print(obtem_partidos(info))
-#print(obtem_resultados_eleicoes(info))
+#print(obtem_resultado_eleicoes(info))
