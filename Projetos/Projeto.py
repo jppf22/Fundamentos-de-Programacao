@@ -261,36 +261,27 @@ def obtem_resultado_eleicoes(info_about_elections):
     return -> list[tuple(str,int,int)]
     '''
 
-
-    def which_has_more_representation(info_about_party):
-        return (info_about_party[1],info_about_party[2])
-    
     if(type(info_about_elections) != dict):
         raise ValueError("obtem_resultado_eleicoes: argumento invalido")
 
     parties = obtem_partidos(info_about_elections)
     election_circles = list(info_about_elections.keys())
     votes_seats_per_party = {} #format {party: [seats,votes]}
-    for i in election_circles: #estou a supor que as regras descritas no projeto são válidas para cada circulo eleitoral e não o conjunto
+
+    for i in election_circles: 
         seats = info_about_elections[i]['deputados']
         votes = info_about_elections[i]['votos']
         mandates = atribui_mandatos(votes,seats)
 
-        for j in parties: #lógica certa mas falta tirar os partidos que não pertencem a um certo circulo eleitoral
+        for j in parties: 
 
             if(j not in list(votes.keys())):
                 continue
 
             seats_per_party = mandates.count(j)
             votes_per_party = votes[j]
-<<<<<<< HEAD
-            votes_seats_per_party[j] = [0,0]
-        
-    #-----------------------------------------------------------------------------------------------------
-=======
             if(votes_seats_per_party.get(j) == None):
                 votes_seats_per_party[j] = [0,0]
->>>>>>> 694088ca928867a0ce4d0bffac70309bb83cf839
             votes_seats_per_party[j][0] += seats_per_party
             votes_seats_per_party[j][1] += votes_per_party
 
@@ -299,27 +290,49 @@ def obtem_resultado_eleicoes(info_about_elections):
     for i in range(len(res)):
         res[i] = (res[i][0],res[i][1][0],res[i][1][1])
 
- 
-    #return res.sort(key=which_has_more_representation,reverse=True)
     res.sort(key=lambda x:(x[1],x[2]),reverse=True)
     return res
     
-
-
 #print(calcula_quocientes({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7))
 #print(atribui_mandatos({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7))
-
-info = {
-            'Endor':   {'deputados': 7, 
-                        'votos': {'A':12000, 'B':7500, 'C':5250, 'D':3000}},
-            'Hoth':    {'deputados': 6, 
-                        'votos': {'A':9000, 'B':11500, 'D':1500, 'E':5000}},
-            'Tatooine': {'deputados': 3, 
-                        'votos': {'A':3000, 'B':1900}}}
-
+#info = {'Endor':   {'deputados': 7, 'votos': {'A':12000, 'B':7500, 'C':5250, 'D':3000}},'Hoth':    {'deputados': 6, 'votos': {'A':9000, 'B':11500, 'D':1500, 'E':5000}}, 'Tatooine': {'deputados': 3, 'votos': {'A':3000, 'B':1900}}}
 #print(obtem_partidos(info))
-<<<<<<< HEAD
-print(obtem_resultados_eleicoes(info))
-=======
 #print(obtem_resultado_eleicoes(info))
->>>>>>> 694088ca928867a0ce4d0bffac70309bb83cf839
+
+def produto_interno(vector1,vector2):
+    '''
+    Returns the intern product of the given two same-dimension vectors
+
+    vector1 -> tuple
+    vector2 -> tuple
+    return -> float
+    '''
+    return sum([vector1[x]*vector2[x] for x in range(len(vector1))])
+
+def verifica_convergencia(matrice,vector_constants,current_solution,precision):
+    '''
+    Returns true if every equation of the expanded matrice has an absolute error inferior to the given precision
+
+    matrice -> tuple
+    vector_constants -> tuple
+    current_solution -> tuple
+    return -> bool
+    '''
+    length = len(matrice) #we know we will have same number of columns and rows
+    for i in range(length):
+        summation = produto_interno(matrice[i],current_solution)
+        if abs(summation - vector_constants[i]) > precision:
+            return False
+    return True
+
+#print(verifica_convergencia(((1, -0.5), (-1, 2)), (-0.4, 1.9), (0.1001, 1), 0.00001))
+#print(verifica_convergencia(((1, -0.5), (-1, 2)), (-0.4, 1.9), (0.1001, 1), 0.001))
+
+def retira_zeros_diagonal():
+    pass
+
+def eh_diagonal_dominante():
+    pass
+
+def resolve_sistema():
+    pass
