@@ -140,6 +140,12 @@ def justifica_texto(string,width):
 
 
     string_toparse = limpa_texto(string)
+
+    #verificação NOVA
+    for palavras in string_toparse.split():
+        if(len(palavras) > width):
+            raise ValueError("justifica_texto: argumentos invalidos")
+    
     string_tuple = ()
     
     while string_toparse != "":
@@ -161,7 +167,7 @@ a primeira epopeia \nportuguesa         publicada em versão impressa. Provavelm
 foi publicada em Lisboa em 1572          no período literário do Classicismo, ou Renascimento tardio, três anos após o regresso\
  do autor do Oriente, via \vMoçambique.')
 
-for l in justifica_texto(cad,20): print(l)
+#for l in justifica_texto(cad,10): print(l)
 
 
 # Exercicio 2 ---------------------------------------------------------------------
@@ -272,9 +278,9 @@ def obtem_resultados_eleicoes(info_about_elections):
         for j in parties:
             seats_per_party = mandates.count(j)
             votes_per_party = votes[j]
-            votes_seats_per_party[j] += [0,0]
+            votes_seats_per_party[j] = [0,0]
         
-            #------------------------------------------------------------
+    #-----------------------------------------------------------------------------------------------------
             votes_seats_per_party[j][0] += seats_per_party
             votes_seats_per_party[j][1] += votes_per_party
     res = [(x,y,z) for x in votes_seats_per_party for y in x[0] for z in x[1]]
@@ -295,4 +301,4 @@ info = {
                         'votos': {'A':3000, 'B':1900}}}
 
 #print(obtem_partidos(info))
-#print(obtem_resultados_eleicoes(info))
+print(obtem_resultados_eleicoes(info))
