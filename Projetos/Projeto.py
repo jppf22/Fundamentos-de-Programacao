@@ -328,11 +328,59 @@ def verifica_convergencia(matrice,vector_constants,current_solution,precision):
 #print(verifica_convergencia(((1, -0.5), (-1, 2)), (-0.4, 1.9), (0.1001, 1), 0.00001))
 #print(verifica_convergencia(((1, -0.5), (-1, 2)), (-0.4, 1.9), (0.1001, 1), 0.001))
 
-def retira_zeros_diagonal():
-    pass
+def retira_zeros_diagonal(matrice,vector_constants):
+    '''
+    Returns a reorganized matrice where there aren't 0's on the main diagonal 
+    and a vector reflecting the same operations used on the matrice
 
-def eh_diagonal_dominante():
-    pass
+    matrice -> tuple(tuple)
+    vector_constants -> tuple
+    return -> tuple(tuple,tuple)
+    '''
+    def isLineSwitchable(line1,n_line1,line2,n_line2):
+        '''Indicates wether line1 and line2 can switch with one another or not, so no 0's are in the diagonal'''
+        return (line1[n_line2] != 0 and line2[n_line1]!= 0)
 
-def resolve_sistema():
+    matrice_temp = list(matrice)
+    constants_temp = list(vector_constants)
+
+    for i in range(len(matrice)):
+        if matrice_temp[i][i] == 0: #if there is a zero on the main diagonal
+
+            for j in range(len(matrice)):
+                if isLineSwitchable(matrice_temp[i],i,matrice_temp[j],j):
+                    matrice_temp[i],matrice_temp[j] = matrice_temp[j],matrice_temp[i]
+                    constants_temp[i],constants_temp[j] = constants_temp[j],constants_temp[i]
+                    break
+    
+    return (tuple(matrice_temp),tuple(constants_temp))
+
+#print(retira_zeros_diagonal(((3,4,0,6,7),(3,5,7,0,9),(4,4,4,4,4),(0,1,2,3,4),(8,9,1,2,0)), (1, 2, 3,4,5)))
+    
+def eh_diagonal_dominante(matrice):
+    '''
+    Returns true if the received matrice is diagonally dominant, false otherwise
+    
+    matrice -> tuple(tuple)
+    return -> bool
+    '''
+
+    for i in range(len(matrice)):
+        if not (sum(matrice[i]) <= 2*(matrice[i][i])): #if a diognal entry is not bigger then the sum of the restant entries in a row -> the diagional is not dominant
+            return False
+    return True
+
+def resolve_sistema(matrice,vector_constants,precision):
+    '''
+    Returns the solution to the given equation system (augmented matrice) using the Jacobi method
+
+    matrice -> tuple(tuple)
+    vector_constants -> tuple
+    precision -> float
+    return -> tuple
+    '''
+
+
+
+
     pass

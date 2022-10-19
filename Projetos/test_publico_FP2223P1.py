@@ -169,16 +169,16 @@ class TestPublicSistemasLineares:
     def test_3(self):
         assert verifica_convergencia(((1, -0.5), (-1, 2)), (-0.4, 1.9), (0.1001, 1), 0.001) == True
 
-    '''
+    
     def test_4(self):
         assert retira_zeros_diagonal(((0, 1, 1), (1, 0, 0), (0, 1, 0)), (1, 2, 3)) == (((1, 0, 0), (0, 1, 0), (0, 1, 1)), (2, 3, 1))
-
+    
     def test_5(self):
         assert eh_diagonal_dominante(((1, 2, 3, 4, 5),(4, -5, 6, -7, 8), (1, 3, 5, 3, 1), (-1, 0, -1, 0, -1), (0, 2, 4, 6, 8))) == False
 
     def test_6(self):
         assert eh_diagonal_dominante(((1, 0, 0), (0, 1, 0), (0, 1, 1))) == True
-
+    '''
     def test_7(self):    
         def equal(x,y):
             delta = 1e-10
