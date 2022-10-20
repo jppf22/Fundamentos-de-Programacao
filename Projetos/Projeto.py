@@ -379,8 +379,19 @@ def resolve_sistema(matrice,vector_constants,precision):
     precision -> float
     return -> tuple
     '''
+    def invalid_argument():
+        raise ValueError("resolve_sistema: argumentos invalidos")
 
-
-
-
-    pass
+    ## Argument validation
+    if(type(matrice) != tuple or vector_constants != tuple or \
+        type(precision) != (float,int) or precision <= 0):
+        invalid_argument()
+    
+    for i in matrice:
+        if(type(i) != tuple):
+            invalid_argument()
+        for j in matrice[i]:
+            if(type(j) != i(int,float)):
+                invalid_argument()
+    
+    
