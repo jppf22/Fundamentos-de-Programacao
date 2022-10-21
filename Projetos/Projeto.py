@@ -366,7 +366,7 @@ def eh_diagonal_dominante(matrice):
     '''
 
     for i in range(len(matrice)):
-        if not (sum(matrice[i]) <= abs(2*(matrice[i][i]))): #if a diognal entry is not bigger then the sum of the restant entries in a row -> the diagional is not dominant
+        if not (sum(matrice[i]) <= abs(2*(matrice[i][i]))): #if a diagonal entry is not bigger then the sum of the restant entries in a row -> the diagional is not dominant
             return False
     return True
 
@@ -393,15 +393,20 @@ def resolve_sistema(matrice,vector_constants,precision):
 
     # Argument validation
     if(type(matrice) != tuple or type(vector_constants) != tuple or \
-        (type(precision) != float and type(precision) != int) or precision <= 0):
+        (type(precision) != float and type(precision) != int) or precision <= 0 \
+            or len(matrice)!=len(vector_constants)):
         invalid_argument()
     
+    matrice_length = len(matrice)
     for i in matrice:
-        if(type(i) != tuple):
+        if(type(i) != tuple or len(i) != matrice_length): #check if matrice is tuple and has length
             invalid_argument()
         for j in i:
             if(type(j) != int and type(j) != float):
                 invalid_argument()
+    for i in vector_constants:
+        if(type(i) != int):
+            invalid_argument()
     
     matrice,vector_constants = retira_zeros_diagonal(matrice,vector_constants)
 
@@ -419,5 +424,6 @@ def resolve_sistema(matrice,vector_constants,precision):
 
     return current_solution
 
-A4, c4 = ((2, -1, -1), (2, -9, 7), (-2, 5, -9)), (-8, 8, -6)
+#A4, c4 = ((2, -1, -1), (2, -9, 7), (-2, 5, -9)), (-8, 8, -6)
 #print(resolve_sistema(A4, c4, 1e-20))
+
