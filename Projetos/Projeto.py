@@ -366,7 +366,7 @@ def eh_diagonal_dominante(matrice):
     '''
 
     for i in range(len(matrice)):
-        if not (sum(matrice[i]) <= 2*(matrice[i][i])): #if a diognal entry is not bigger then the sum of the restant entries in a row -> the diagional is not dominant
+        if not (sum(matrice[i]) <= abs(2*(matrice[i][i]))): #if a diognal entry is not bigger then the sum of the restant entries in a row -> the diagional is not dominant
             return False
     return True
 
@@ -382,16 +382,42 @@ def resolve_sistema(matrice,vector_constants,precision):
     def invalid_argument():
         raise ValueError("resolve_sistema: argumentos invalidos")
 
-    ## Argument validation
-    if(type(matrice) != tuple or vector_constants != tuple or \
-        type(precision) != (float,int) or precision <= 0):
+    def isErrorSmallerThanPrecision():
+        def equation_error(n_equation):
+            return abs(produto_interno(matrice[i],current_solution)-vector_constants[i])
+        
+        for i in range(len(matrice)):
+            if(equation_error(i) > precision):
+                return False
+        return True
+
+    # Argument validation
+    if(type(matrice) != tuple or type(vector_constants) != tuple or \
+        (type(precision) != float and type(precision) != int) or precision <= 0):
         invalid_argument()
     
     for i in matrice:
         if(type(i) != tuple):
             invalid_argument()
-        for j in matrice[i]:
-            if(type(j) != i(int,float)):
+        for j in i:
+            if(type(j) != int and type(j) != float):
                 invalid_argument()
     
+    matrice,vector_constants = retira_zeros_diagonal(matrice,vector_constants)
+
+    if not eh_diagonal_dominante(matrice):
+        raise ValueError("resolve_sistema: matriz nao diagonal dominante")
     
+    # Discover solution
+    current_solution = tuple([0 for x in range(len(matrice))])
+
+    while not isErrorSmallerThanPrecision():
+        temp_solution = ()
+        for i in range(len(current_solution)):
+            temp_solution += ((current_solution[i] + (vector_constants[i] - produto_interno(matrice[i],current_solution))/matrice[i][i]),)
+        current_solution = temp_solution
+
+    return current_solution
+
+A4, c4 = ((2, -1, -1), (2, -9, 7), (-2, 5, -9)), (-8, 8, -6)
+#print(resolve_sistema(A4, c4, 1e-20))

@@ -178,7 +178,7 @@ class TestPublicSistemasLineares:
 
     def test_6(self):
         assert eh_diagonal_dominante(((1, 0, 0), (0, 1, 0), (0, 1, 1))) == True
-    '''
+    
     def test_7(self):    
         def equal(x,y):
             delta = 1e-10
@@ -188,5 +188,5 @@ class TestPublicSistemasLineares:
         ref = (-4.0, -1.0, 1.0)
             
         assert equal(resolve_sistema(A4, c4, 1e-20), ref)
-'''
+
         
