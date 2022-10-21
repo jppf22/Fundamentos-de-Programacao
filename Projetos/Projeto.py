@@ -157,19 +157,6 @@ def justifica_texto(string,width):
     
     return string_tuple
 
-
-#print(limpa_texto("\v    \t Fundamentos     \n\t \v     da   \f      Programacao\n          "))
-#print(corta_texto("Fundamentos da Programacao",15))
-
-
-cad = ('Os Lusíadas é\t uma obra de poesia épica do escritor português Luís Vaz de Camões, \
-a primeira epopeia \nportuguesa         publicada em versão impressa. Provavelmente iniciada em 1556 e concluída em 1571, \
-foi publicada em Lisboa em 1572          no período literário do Classicismo, ou Renascimento tardio, três anos após o regresso\
- do autor do Oriente, via \vMoçambique.')
-
-#for l in justifica_texto(cad,10): print(l)
-
-
 # Exercicio 2 ---------------------------------------------------------------------
 def calcula_quocientes(votes_per_party,num_representatives):
     '''
@@ -293,12 +280,6 @@ def obtem_resultado_eleicoes(info_about_elections):
     res.sort(key=lambda x:(x[1],x[2]),reverse=True)
     return res
     
-#print(calcula_quocientes({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7))
-#print(atribui_mandatos({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7))
-#info = {'Endor':   {'deputados': 7, 'votos': {'A':12000, 'B':7500, 'C':5250, 'D':3000}},'Hoth':    {'deputados': 6, 'votos': {'A':9000, 'B':11500, 'D':1500, 'E':5000}}, 'Tatooine': {'deputados': 3, 'votos': {'A':3000, 'B':1900}}}
-#print(obtem_partidos(info))
-#print(obtem_resultado_eleicoes(info))
-
 def produto_interno(vector1,vector2):
     '''
     Returns the intern product of the given two same-dimension vectors
@@ -324,9 +305,6 @@ def verifica_convergencia(matrice,vector_constants,current_solution,precision):
         if abs(summation - vector_constants[i]) > precision:
             return False
     return True
-
-#print(verifica_convergencia(((1, -0.5), (-1, 2)), (-0.4, 1.9), (0.1001, 1), 0.00001))
-#print(verifica_convergencia(((1, -0.5), (-1, 2)), (-0.4, 1.9), (0.1001, 1), 0.001))
 
 def retira_zeros_diagonal(matrice,vector_constants):
     '''
@@ -379,6 +357,7 @@ def resolve_sistema(matrice,vector_constants,precision):
     precision -> float
     return -> tuple
     '''
+
     def invalid_argument():
         raise ValueError("resolve_sistema: argumentos invalidos")
 

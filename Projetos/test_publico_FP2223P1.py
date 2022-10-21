@@ -27,6 +27,103 @@ class TestPublicJustificarTextos:
             'Together they are powerful beyond imagination.              ')
         assert ref == justifica_texto(cad, 60)
     
+     # Corta Texto
+    # Forma geral
+    def test_corta_texto1(self):
+        assert ('Fundamentos da', 'Programacao') == corta_texto(
+            'Fundamentos da Programacao', 15)
+
+    # 'Fundamentos da' -> tem 14 letras
+    # Verifica se o utilizador conta com o espaço quando está a inserir
+    def test_corta_texto2(self):
+        assert ('Fundamentos', 'da Programacao') == corta_texto(
+            'Fundamentos da Programacao', 13)
+        
+    # Verifica o texto no caso de ter uma palavra da segunda cadeia que ainda cabe na primeira
+    def test_corta_texto3(self):
+        assert ('Computers are incredibly fast, accurate and stupid. Human beings are incredibly slow', 'inaccurate, and brilliant. Together they are powerful beyond imagination.') == corta_texto("Computers are incredibly fast, accurate and stupid. Human beings are incredibly slow inaccurate, and brilliant. Together they are powerful beyond imagination.", 95)
+
+    # Verifica se o utilizador consegue inserir espaços de forma uniforme
+    def test_insere_espacos1(self):
+        assert 'Fundamentos  da Programacao!!!' == insere_espacos(
+            'Fundamentos da Programacao!!!', 30)
+
+    # Verifica se o utilizador insere mais do que 2 espaços seguidos se for preciso
+    def test_insere_espacos2(self):
+        assert 'Fundamentos       da      Programacao!!!' == insere_espacos(
+            'Fundamentos da Programacao!!!', 40)
+
+    # Verifica se o utilizador consegue fazer com textos maiores que 3 palavras
+    def test_insere_espacos3(self):
+        assert 'Lorem  Ipsum  is  simply  dummy  text  of  the  printing and typesetting industry.' == insere_espacos(
+            'Lorem Ipsum is simply dummy text of the printing and typesetting industry.', 82)
+
+    # Verifica se o utilizador insere espaços quando só existem duas palavras
+    def test_insere_espacos4(self):
+        assert 'Lorem       Ipsum' == insere_espacos('Lorem Ipsum', 17)
+
+    # Verifica se o utilizador insere espaços uniformes, caso seja preciso
+    def test_insere_espacos5(self):
+        assert 'Lorem  Ipsum  is  simply  dummy' == insere_espacos(
+            'Lorem Ipsum is simply dummy', 31)
+
+    # Verifica se o utilizador insere espaços só para a frente da palavra, mesmo que só seja uma letra
+    def test_insere_espacos6(self):
+        assert '?    ' == insere_espacos('?', 5)
+
+    # Verifica se o utilizador insere espaços só para a frente da palavra
+    def test_insere_espacos7(self):
+        assert 'Fundamentos    ' == insere_espacos('Fundamentos', 15)
+
+    # Verifica se o utilizador formata o texto pedido no pdf
+    def test_justifica_texto1(self):
+        cad = ('Computers are incredibly  \n\tfast,     \n\t\taccurate'
+               ' \n\t\t\tand  stupid.   \n    Human beings are incredibly  slow  '
+               'inaccurate, and brilliant. \n     Together  they  are powerful   '
+               'beyond imagination.')
+
+        ref = ('Computers  are  incredibly  fast, accurate and stupid. Human',
+               'beings   are  incredibly  slow  inaccurate,  and  brilliant.',
+               'Together they are powerful beyond imagination.              ')
+        assert ref == justifica_texto(cad, 60)
+
+    def test_justifica_texto2(self):
+        cad = ('Computers are incredibly  \n\tfast,     \n\t\taccurate')
+        ref = ('Computers are incredibly fast, accurate           ',)
+        assert ref == justifica_texto(cad, 50)
+
+    # Verifica se o utilizador formata cadeias com segmentos internos de comprimento igual à largura de coluna
+    def test_justifica_texto3(self):
+        cad = ('123456 123')
+        ref = ('123456', '123   ')
+        assert ref == justifica_texto(cad, 6)
+
+    # levantar erro se primeiro argumento não é uma lista não vazia, ou o segundo não é um número inteiro positivo
+    # ou existe uma palavra maior que o tamanho pretendido
+    def test_justifica_texto_error1(self):
+        with pytest.raises(ValueError, match='justifica_texto: argumentos invalidos'):
+            justifica_texto('', 60)
+
+    def test_justifica_texto_error2(self):
+        with pytest.raises(ValueError, match='justifica_texto: argumentos invalidos'):
+            justifica_texto('Fundamentos', "Banana")
+
+    def test_justifica_texto_error3(self):
+        with pytest.raises(ValueError, match='justifica_texto: argumentos invalidos'):
+            justifica_texto(89, 60)
+
+    def test_justifica_texto_error4(self):
+        with pytest.raises(ValueError, match='justifica_texto: argumentos invalidos'):
+            justifica_texto('Texto', -10)
+
+    def test_justifica_texto_error5(self):
+        with pytest.raises(ValueError, match='justifica_texto: argumentos invalidos'):
+            justifica_texto('Otorrinolaringologista', 10)
+
+    def test_justifica_texto_error6(self):
+        with pytest.raises(ValueError, match='justifica_texto: argumentos invalidos'):
+            justifica_texto('123456 123', 4)
+
 
 
 class TestPublicMetodoHondt:
