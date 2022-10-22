@@ -34,6 +34,10 @@ def corta_texto(string_clean, width):
     width -> int
     return -> tuple(str,str)
     '''
+
+    def isLastWordCut():
+        return (previous_c != ' ' and current_c != ' ')
+
     if(len(string_clean) <= width):
         return (string_clean, "")
 
@@ -43,7 +47,7 @@ def corta_texto(string_clean, width):
         previous_c = (string_clean[width-1])
         current_c = string_clean[width]
 
-        if(previous_c != ' ' and current_c != ' '): #the last word in substring1 is incomplete
+        if(isLastWordCut()): 
             sub_string = string_clean[:width-1]
         else: 
             return (sub_string,string_clean[width+1:]) if current_c == ' ' \
