@@ -18,8 +18,7 @@ def limpa_texto(string):
     for i in blank_characters: 
         string = string.replace(i,' ')
 
-    string = string.split() #With no arguments, Python will use ' ' as the delimiter and consider any group of whitespaces as a single one
-    string = ' '.join(string)
+    string = ' '.join(string.split())   #With no arguments, split() will use ' ' as the delimiter and consider any group of whitespaces as a single one
 
     return string
 
@@ -35,26 +34,24 @@ def corta_texto(string_clean, width):
     width -> int
     return -> tuple(str,str)
     '''
-
-    def isChar(char): #substituir por builtin
-        return (char != ' ')
-
     if(len(string_clean) <= width):
         return (string_clean, "")
 
-    sub_string1 = string_clean[:width] 
-    while width != 0:
-        #If substring1 has an incomplete word -> we need to make it shorter until there are only full words in it(since its maximum length is width)
-        if(isChar(string_clean[width-1]) and isChar(string_clean[width])):
-            sub_string1 = string_clean[:width-1]
-        else:
-            return (limpa_texto(sub_string1),limpa_texto(string_clean[width:]))
-            # limpa_texto(sub_string1[:width-1])
-            #se tem espaço ? a : b
-            # ternary operator
-        width -= 1
+    sub_string = string_clean[:width] 
     
+    while width != 0:
+        previous_c = (string_clean[width-1])
+        current_c = string_clean[width]
+
+        if(previous_c != ' ' and current_c != ' '): #the last word in substring1 is incomplete
+            sub_string = string_clean[:width-1]
+        else: 
+            return (sub_string,string_clean[width+1:]) if current_c == ' ' \
+                else (sub_string[:-1],string_clean[width:]) #it is guaranteed that either sub_string ends with ' ' or the leftover starts with ' ' 
+        width -= 1
+
     return("",string_clean) #No full word fits the given width
+
 
 
 def insere_espacos(string_clean, width):
