@@ -44,7 +44,7 @@ def corta_texto(string_clean, width):
     sub_string = string_clean[:width] 
     
     while width != 0:
-        previous_c = (string_clean[width-1])
+        previous_c = string_clean[width-1]
         current_c = string_clean[width]
 
         if(isLastWordCut()): 
@@ -141,7 +141,7 @@ def justifica_texto(string,width):
 
     string_toparse = limpa_texto(string)
 
-    #verificação NOVA
+
     for palavras in string_toparse.split():
         if(len(palavras) > width):
             raise ValueError("justifica_texto: argumentos invalidos")
@@ -248,7 +248,6 @@ def obtem_resultado_eleicoes(info_about_elections):
     return -> list[tuple(str,int,int)]
     '''
     
-    #Error handling
     def invalid_argument():
         raise ValueError("obtem_resultado_eleicoes: argumento invalido")
 
@@ -285,9 +284,7 @@ def obtem_resultado_eleicoes(info_about_elections):
             invalid_argument()
 
         votes = info_about_elections[i]['votos']
-
         mandates = atribui_mandatos(votes,seats)
-
         areThereVotes = False
 
         for j in parties: 
@@ -309,10 +306,10 @@ def obtem_resultado_eleicoes(info_about_elections):
         if not areThereVotes:
             invalid_argument()
 
+    #Obtain the desired format for the election results
     res = list(votes_seats_per_party.items())
-
     for i in range(len(res)):
-        res[i] = (res[i][0],res[i][1][0],res[i][1][1])
+        res[i] = (res[i][0],res[i][1][0],res[i][1][1]) 
 
     res.sort(key=lambda x:(x[1],x[2]),reverse=True)
     return res
@@ -336,7 +333,7 @@ def verifica_convergencia(matrice,vector_constants,current_solution,precision):
     current_solution -> tuple
     return -> bool
     '''
-    length = len(matrice) #we know we will have same number of columns and rows
+    length = len(matrice) 
     for i in range(length):
         summation = produto_interno(matrice[i],current_solution)
         if abs(summation - vector_constants[i]) > precision:
@@ -352,25 +349,24 @@ def retira_zeros_diagonal(matrice,vector_constants):
     vector_constants -> tuple
     return -> tuple(tuple,tuple)
     '''
-    def isLineSwitchable(line1,n_line1,line2,n_line2):
+    def isLineSwitchable(line1,line1_pos,line2,line2_pos):
         '''Indicates wether line1 and line2 can switch with one another or not, so no 0's are in the diagonal'''
-        return (line1[n_line2] != 0 and line2[n_line1]!= 0)
+        return (line1[line2_pos] != 0 and line2[line1_pos]!= 0)
 
     matrice_temp = list(matrice)
     constants_temp = list(vector_constants)
 
-    for i in range(len(matrice)):
-        if matrice_temp[i][i] == 0: #if there is a zero on the main diagonal
+    for line in range(len(matrice)):
 
-            for j in range(len(matrice)):
-                if isLineSwitchable(matrice_temp[i],i,matrice_temp[j],j):
-                    matrice_temp[i],matrice_temp[j] = matrice_temp[j],matrice_temp[i]
-                    constants_temp[i],constants_temp[j] = constants_temp[j],constants_temp[i]
+        if matrice_temp[line][line] == 0: 
+
+            for column in range(len(matrice)):
+                if isLineSwitchable(matrice_temp[line],line,matrice_temp[column],column):
+                    matrice_temp[line],matrice_temp[column] = matrice_temp[column],matrice_temp[line]
+                    constants_temp[line],constants_temp[column] = constants_temp[column],constants_temp[line]
                     break
     
     return (tuple(matrice_temp),tuple(constants_temp))
-
-#print(retira_zeros_diagonal(((3,4,0,6,7),(3,5,7,0,9),(4,4,4,4,4),(0,1,2,3,4),(8,9,1,2,0)), (1, 2, 3,4,5)))
     
 def eh_diagonal_dominante(matrice):
     '''
@@ -381,7 +377,7 @@ def eh_diagonal_dominante(matrice):
     '''
 
     for i in range(len(matrice)):
-        if not (sum(abs(x) for x in matrice[i] if x != matrice[i][i]) <= abs(matrice[i][i])): #if a diagonal entry is not bigger then the sum of the restant entries in a row -> the diagional is not dominant
+        if not (sum(abs(x) for x in matrice[i] if x != matrice[i][i]) <= abs(matrice[i][i])):  
             return False
     return True
 
@@ -415,7 +411,7 @@ def resolve_sistema(matrice,vector_constants,precision):
     
     matrice_length = len(matrice)
     for i in matrice:
-        if(type(i) != tuple or len(i) != matrice_length): #check if matrice is tuple and has length
+        if(type(i) != tuple or len(i) != matrice_length): 
             invalid_argument()
         for j in i:
             if(type(j) != int and type(j) != float):
@@ -429,7 +425,7 @@ def resolve_sistema(matrice,vector_constants,precision):
     if not eh_diagonal_dominante(matrice):
         raise ValueError("resolve_sistema: matriz nao diagonal dominante")
     
-    # Discover solution
+    # Discover solution to equation system
     current_solution = tuple([0 for x in range(len(matrice))])
 
     while not isErrorSmallerThanPrecision():
@@ -439,7 +435,3 @@ def resolve_sistema(matrice,vector_constants,precision):
         current_solution = temp_solution
 
     return current_solution
-
-#A4, c4 = ((2, -1, -1), (2, -9, 7), (-2, 5, -9)), (-8, 8, -6)
-#print(resolve_sistema(A4, c4, 1e-20))
-
