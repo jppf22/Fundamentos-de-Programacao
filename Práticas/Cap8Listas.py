@@ -175,10 +175,22 @@ def escreve_esparsa(matriz_esparsa):
             else:
                 print(0,end=finish_char)
 
-escreve_esparsa({(1,5):4,(2,3):9,(4,1):1})
+#escreve_esparsa({(1,5):4,(2,3):9,(4,1):1})
 
 # B)
 
+# TÁ MAL
+
 def soma_esparsa(m1,m2):
-    
+    for i in m1:
+        if(m1[i] in m2.keys()):
+            value_in_m2 = m2.get(m1[i])
+            m1[m1[i]] = m1[m1[i]] +value_in_m2
+            m2.pop(m1[i][0])
+        else:
+            m1.update(m2[i])
+    return m1
+e1 = {(1,5): 4, (2, 3): 9, (4, 1): 1}
+e2 = {(1, 6): 2, (4, 1): 2, (5,4): 2}
+escreve_esparsa(soma_esparsa(e1,e2))
 
