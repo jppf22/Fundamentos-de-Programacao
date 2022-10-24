@@ -135,9 +135,8 @@ def justifica_texto(string,width):
     return -> tuple (made up of str elements)
     '''
 
-    if(len(string)==0 or width <= 0 or type(string) != str or type(width) != int):
+    if(type(string) != str or type(width) != int or len(string)==0 or width <= 0):
         raise ValueError("justifica_texto: argumentos invalidos")
-
 
     string_toparse = limpa_texto(string)
 
@@ -156,19 +155,6 @@ def justifica_texto(string,width):
             string_tuple += (insere_espacos(string_temp,width),)
     
     return string_tuple
-
-
-#print(limpa_texto("\v    \t Fundamentos     \n\t \v     da   \f      Programacao\n          "))
-#print(corta_texto("Fundamentos da Programacao",15))
-
-
-cad = ('Os Lusíadas é\t uma obra de poesia épica do escritor português Luís Vaz de Camões, \
-a primeira epopeia \nportuguesa         publicada em versão impressa. Provavelmente iniciada em 1556 e concluída em 1571, \
-foi publicada em Lisboa em 1572          no período literário do Classicismo, ou Renascimento tardio, três anos após o regresso\
- do autor do Oriente, via \vMoçambique.')
-
-#for l in justifica_texto(cad,10): print(l)
-
 
 # Exercicio 2 ---------------------------------------------------------------------
 def calcula_quocientes(votes_per_party,num_representatives):
@@ -260,18 +246,48 @@ def obtem_resultado_eleicoes(info_about_elections):
     info_about_elections -> dict
     return -> list[tuple(str,int,int)]
     '''
-
-    if(type(info_about_elections) != dict):
+    
+    #Error handling
+    def invalid_argument():
         raise ValueError("obtem_resultado_eleicoes: argumento invalido")
 
-    parties = obtem_partidos(info_about_elections)
+    if(type(info_about_elections) != dict or len(info_about_elections) == 0 or any((type(x) != dict or len(x) != 2) for x in info_about_elections.values())):
+        invalid_argument()
+    
     election_circles = list(info_about_elections.keys())
+
+    for i in election_circles:
+
+        #check if each dictionary follows the correct format
+        if(list(info_about_elections[i].keys()) != ['deputados','votos']):
+            invalid_argument()
+        
+        #check if the type of the values is correct
+        if(type(info_about_elections[i]['votos']) != dict or type(info_about_elections[i]['deputados']) != int):
+            invalid_argument()
+
+        #check if each party name is a string and if each party number of votes is a positive integer
+        if(any((type(x)!=int or x < 0) for x in info_about_elections[i]['votos'].values()) or any(type(x)!= str for x in info_about_elections[i]['votos'].keys())):
+            invalid_argument()
+        
+
+    # The majority of the error handling has to be before this point, otherwise obtem_partidos() would either fail or return erroneous results
+    parties = obtem_partidos(info_about_elections)
+
     votes_seats_per_party = {} #format {party: [seats,votes]}
 
-    for i in election_circles: 
+    for i in election_circles:
+        
         seats = info_about_elections[i]['deputados']
+
+        if(seats == 0):
+            invalid_argument()
+
         votes = info_about_elections[i]['votos']
+
         mandates = atribui_mandatos(votes,seats)
+
+        areThereVotes = False
 
         for j in parties: 
 
@@ -280,10 +296,17 @@ def obtem_resultado_eleicoes(info_about_elections):
 
             seats_per_party = mandates.count(j)
             votes_per_party = votes[j]
+
+            if(areThereVotes == False and votes_per_party > 0):
+                areThereVotes = True
+
             if(votes_seats_per_party.get(j) == None):
                 votes_seats_per_party[j] = [0,0]
             votes_seats_per_party[j][0] += seats_per_party
             votes_seats_per_party[j][1] += votes_per_party
+        
+        if not areThereVotes:
+            invalid_argument()
 
     res = list(votes_seats_per_party.items())
 
@@ -293,12 +316,6 @@ def obtem_resultado_eleicoes(info_about_elections):
     res.sort(key=lambda x:(x[1],x[2]),reverse=True)
     return res
     
-#print(calcula_quocientes({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7))
-#print(atribui_mandatos({'A': 12000, 'B': 7500, 'C': 5250, 'D': 3000}, 7))
-#info = {'Endor':   {'deputados': 7, 'votos': {'A':12000, 'B':7500, 'C':5250, 'D':3000}},'Hoth':    {'deputados': 6, 'votos': {'A':9000, 'B':11500, 'D':1500, 'E':5000}}, 'Tatooine': {'deputados': 3, 'votos': {'A':3000, 'B':1900}}}
-#print(obtem_partidos(info))
-#print(obtem_resultado_eleicoes(info))
-
 def produto_interno(vector1,vector2):
     '''
     Returns the intern product of the given two same-dimension vectors
@@ -307,7 +324,7 @@ def produto_interno(vector1,vector2):
     vector2 -> tuple
     return -> float
     '''
-    return sum([vector1[x]*vector2[x] for x in range(len(vector1))])
+    return float(sum([vector1[x]*vector2[x] for x in range(len(vector1))]))
 
 def verifica_convergencia(matrice,vector_constants,current_solution,precision):
     '''
@@ -324,9 +341,6 @@ def verifica_convergencia(matrice,vector_constants,current_solution,precision):
         if abs(summation - vector_constants[i]) > precision:
             return False
     return True
-
-#print(verifica_convergencia(((1, -0.5), (-1, 2)), (-0.4, 1.9), (0.1001, 1), 0.00001))
-#print(verifica_convergencia(((1, -0.5), (-1, 2)), (-0.4, 1.9), (0.1001, 1), 0.001))
 
 def retira_zeros_diagonal(matrice,vector_constants):
     '''
@@ -366,7 +380,7 @@ def eh_diagonal_dominante(matrice):
     '''
 
     for i in range(len(matrice)):
-        if not (sum(matrice[i]) <= abs(2*(matrice[i][i]))): #if a diagonal entry is not bigger then the sum of the restant entries in a row -> the diagional is not dominant
+        if not (sum(abs(x) for x in matrice[i] if x != matrice[i][i]) <= abs(matrice[i][i])): #if a diagonal entry is not bigger then the sum of the restant entries in a row -> the diagional is not dominant
             return False
     return True
 
@@ -379,6 +393,7 @@ def resolve_sistema(matrice,vector_constants,precision):
     precision -> float
     return -> tuple
     '''
+
     def invalid_argument():
         raise ValueError("resolve_sistema: argumentos invalidos")
 
