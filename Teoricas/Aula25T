@@ -1,0 +1,8 @@
+# Funções recursivas de cauda
+
+def factorial_aux(n,res):
+    if n==0:
+        return 1
+    else:
+        return factorial_aux(n-1,n*res)
+
