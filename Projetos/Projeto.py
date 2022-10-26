@@ -423,10 +423,6 @@ def resolve_sistema(matrice,vector_constants,precision):
     
     matrice,vector_constants = retira_zeros_diagonal(matrice,vector_constants)
 
-    for i in range(len(matrice)):
-        if(matrice[i][i] == 0):
-            invalid_argument()
-
     if not eh_diagonal_dominante(matrice):
         raise ValueError("resolve_sistema: matriz nao diagonal dominante")
     
