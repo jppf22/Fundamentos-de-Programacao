@@ -261,7 +261,8 @@ def obtem_resultado_eleicoes(info_about_elections):
             invalid_argument()
         
         #check if the type of the values is correct
-        if(type(info_about_elections[i]['votos']) != dict or type(info_about_elections[i]['deputados']) != int):
+        if(type(info_about_elections[i]['votos']) != dict or type(info_about_elections[i]['deputados']) != int \
+            or len(info_about_elections[i]['votos']) == 0 or info_about_elections[i]['deputados'] == 0):
             invalid_argument()
 
         #check if each party name is a string and if each party number of votes is a positive integer
@@ -277,13 +278,11 @@ def obtem_resultado_eleicoes(info_about_elections):
     for i in election_circles:
         
         seats = info_about_elections[i]['deputados']
-
-        if(seats == 0):
-            invalid_argument()
-
-        votes = info_about_elections[i]['votos']
+        votes = info_about_elections[i]['votos']  
         mandates = atribui_mandatos(votes,seats)
+        
         areThereVotes = False
+        areThereMandates = False
 
         for j in parties: 
 
@@ -295,13 +294,16 @@ def obtem_resultado_eleicoes(info_about_elections):
 
             if(areThereVotes == False and votes_per_party > 0):
                 areThereVotes = True
+            
+            if(areThereMandates == False and seats_per_party > 0):
+                areThereMandates = True
 
             if(votes_seats_per_party.get(j) == None):
                 votes_seats_per_party[j] = [0,0]
             votes_seats_per_party[j][0] += seats_per_party
             votes_seats_per_party[j][1] += votes_per_party
         
-        if not areThereVotes:
+        if not areThereVotes or not areThereMandates:
             invalid_argument()
 
     #Obtain the desired format for the election results
@@ -341,7 +343,7 @@ def verifica_convergencia(matrice,vector_constants,current_solution,precision):
 def retira_zeros_diagonal(matrice,vector_constants):
     '''
     Returns a reorganized matrice where there aren't 0's on the main diagonal 
-    and a vector reflecting the same operations used on the matrice
+    and the vector of the constants reflecting the same operations used on the matrice
 
     matrice -> tuple(tuple)
     vector_constants -> tuple
@@ -401,29 +403,34 @@ def resolve_sistema(matrice,vector_constants,precision):
                 return False
         return True
 
-    # Argument validation
+    # Argument validation----------------------
     if(type(matrice) != tuple or type(vector_constants) != tuple or \
-        (type(precision) != float and type(precision) != int) or precision <= 0 \
+        not isinstance(precision, (float,int)) or precision <= 0 \
             or len(matrice)!=len(vector_constants)):
         invalid_argument()
     
-    matrice_length = len(matrice)
+    matrice_order = len(matrice)
     for i in matrice:
-        if(type(i) != tuple or len(i) != matrice_length): 
+        if(type(i) != tuple or len(i) != matrice_order): 
             invalid_argument()
         for j in i:
-            if(type(j) != int and type(j) != float):
+            if not isinstance(j,(float,int)):
                 invalid_argument()
+                
     for i in vector_constants:
-        if(type(i) != int):
+        if not isinstance(i,(float,int)):
             invalid_argument()
     
     matrice,vector_constants = retira_zeros_diagonal(matrice,vector_constants)
 
+    for i in range(len(matrice)):
+        if(matrice[i][i] == 0):
+            invalid_argument()
+
     if not eh_diagonal_dominante(matrice):
         raise ValueError("resolve_sistema: matriz nao diagonal dominante")
     
-    # Discover solution to equation system
+    # Discover solution to equation system------------------
     current_solution = tuple([0 for x in range(len(matrice))])
 
     while not isErrorSmallerThanPrecision():
