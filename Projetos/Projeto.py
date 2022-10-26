@@ -18,8 +18,7 @@ def limpa_texto(string):
     for i in blank_characters: 
         string = string.replace(i,' ')
 
-    string = string.split() #With no arguments, Python will use ' ' as the delimiter and consider any group of whitespaces as a single one
-    string = ' '.join(string)
+    string = ' '.join(string.split())   #With no arguments, split() will use ' ' as the delimiter and consider any group of whitespaces as a single one
 
     return string
 
@@ -36,25 +35,27 @@ def corta_texto(string_clean, width):
     return -> tuple(str,str)
     '''
 
-    def isChar(char): #substituir por builtin
-        return (char != ' ')
+    def isLastWordCut():
+        return (previous_c != ' ' and current_c != ' ')
 
     if(len(string_clean) <= width):
         return (string_clean, "")
 
-    sub_string1 = string_clean[:width] 
-    while width != 0:
-        #If substring1 has an incomplete word -> we need to make it shorter until there are only full words in it(since its maximum length is width)
-        if(isChar(string_clean[width-1]) and isChar(string_clean[width])):
-            sub_string1 = string_clean[:width-1]
-        else:
-            return (limpa_texto(sub_string1),limpa_texto(string_clean[width:]))
-            # limpa_texto(sub_string1[:width-1])
-            #se tem espaço ? a : b
-            # ternary operator
-        width -= 1
+    sub_string = string_clean[:width] 
     
+    while width != 0:
+        previous_c = string_clean[width-1]
+        current_c = string_clean[width]
+
+        if(isLastWordCut()): 
+            sub_string = string_clean[:width-1]
+        else: 
+            return (sub_string,string_clean[width+1:]) if current_c == ' ' \
+                else (sub_string[:-1],string_clean[width:]) #it is guaranteed that either sub_string ends with ' ' or the leftover starts with ' ' 
+        width -= 1
+
     return("",string_clean) #No full word fits the given width
+
 
 
 def insere_espacos(string_clean, width):
@@ -140,7 +141,7 @@ def justifica_texto(string,width):
 
     string_toparse = limpa_texto(string)
 
-    #verificação NOVA
+
     for palavras in string_toparse.split():
         if(len(palavras) > width):
             raise ValueError("justifica_texto: argumentos invalidos")
@@ -200,30 +201,21 @@ def atribui_mandatos(votes_per_party,num_representatives):
     quotients_per_party = calcula_quocientes(votes_per_party,num_representatives)
     representatives_party = []
 
-    #we are supposed to return a list with len = num_representatives, so we have to change our code
-    for i in range(num_representatives): #put a while here?
-        # if parties already in dispute, use last loop winner_parties
-        # else create a new one
-        biggest_quotient_left = biggest_quotient(quotients_per_party)
-        winner_parties = [i for i in quotients_per_party if biggest_quotient_left in quotients_per_party[i]]
+    curr_representatives = 0
+    winner_parties = [] #keeps tracks of the possible winners of a certain seat
+    biggest_quotient_left = biggest_quotient(quotients_per_party)
 
-        if(len(winner_parties) == 1):
+    while curr_representatives < num_representatives:
+        if(winner_parties):
             representatives_party.append(winner_parties[0])
-            #quotients_per_party[winner_parties[[0]].remove(biggest_quotient_left)
-        else: #if there is a draw -- we are supossed to add 1 per loop
+            quotients_per_party[winner_parties[0]].remove(biggest_quotient_left)
+            curr_representatives+=1
+            winner_parties.pop(0)
+        else:
+            biggest_quotient_left = biggest_quotient(quotients_per_party)
+            winner_parties = [quotient for quotient in quotients_per_party if biggest_quotient_left in quotients_per_party[quotient]]
             winner_parties.sort(key=which_has_less_votes)
-            #representativas_party.append(winner_parties[0])
-            #winner_parties remove first element
-            #quotients per party remove the corresponding quotient from its party
-            for i in winner_parties:
-                representatives_party.append(i)
-                if(len(representatives_party) == num_representatives):
-                    return representatives_party
-
-        for i in quotients_per_party:
-            if(biggest_quotient_left in quotients_per_party[i]): 
-                quotients_per_party[i].remove(biggest_quotient_left)
-
+    
     return representatives_party
 
 
@@ -254,7 +246,6 @@ def obtem_resultado_eleicoes(info_about_elections): #somehow we are still return
     return -> list[tuple(str,int,int)]
     '''
     
-    #Error handling
     def invalid_argument():
         raise ValueError("obtem_resultado_eleicoes: argumento invalido")
 
@@ -270,7 +261,8 @@ def obtem_resultado_eleicoes(info_about_elections): #somehow we are still return
             invalid_argument()
         
         #check if the type of the values is correct
-        if(type(info_about_elections[i]['votos']) != dict or type(info_about_elections[i]['deputados']) != int):
+        if(type(info_about_elections[i]['votos']) != dict or type(info_about_elections[i]['deputados']) != int \
+            or len(info_about_elections[i]['votos']) == 0 or info_about_elections[i]['deputados'] == 0):
             invalid_argument()
 
         #check if each party name is a string and if each party number of votes is a positive integer
@@ -286,15 +278,11 @@ def obtem_resultado_eleicoes(info_about_elections): #somehow we are still return
     for i in election_circles:
         
         seats = info_about_elections[i]['deputados']
-
-        if(seats == 0):
-            invalid_argument()
-
-        votes = info_about_elections[i]['votos']
-
+        votes = info_about_elections[i]['votos']  
         mandates = atribui_mandatos(votes,seats)
-
+        
         areThereVotes = False
+        areThereMandates = False
 
         for j in parties: 
 
@@ -306,19 +294,22 @@ def obtem_resultado_eleicoes(info_about_elections): #somehow we are still return
 
             if(areThereVotes == False and votes_per_party > 0):
                 areThereVotes = True
+            
+            if(areThereMandates == False and seats_per_party > 0):
+                areThereMandates = True
 
             if(votes_seats_per_party.get(j) == None):
                 votes_seats_per_party[j] = [0,0]
             votes_seats_per_party[j][0] += seats_per_party
             votes_seats_per_party[j][1] += votes_per_party
         
-        if not areThereVotes:
+        if not areThereVotes or not areThereMandates:
             invalid_argument()
 
+    #Obtain the desired format for the election results
     res = list(votes_seats_per_party.items())
-
     for i in range(len(res)):
-        res[i] = (res[i][0],res[i][1][0],res[i][1][1])
+        res[i] = (res[i][0],res[i][1][0],res[i][1][1]) 
 
     res.sort(key=lambda x:(x[1],x[2]),reverse=True)
     return res
@@ -342,41 +333,39 @@ def verifica_convergencia(matrice,vector_constants,current_solution,precision):
     current_solution -> tuple
     return -> bool
     '''
-    length = len(matrice) #we know we will have same number of columns and rows
+    length = len(matrice) 
     for i in range(length):
-        summation = produto_interno(matrice[i],current_solution)
-        if abs(summation - vector_constants[i]) > precision:
+        if abs(produto_interno(matrice[i],current_solution) - vector_constants[i]) >= precision:
             return False
     return True
 
 def retira_zeros_diagonal(matrice,vector_constants):
     '''
     Returns a reorganized matrice where there aren't 0's on the main diagonal 
-    and a vector reflecting the same operations used on the matrice
+    and the vector of the constants reflecting the same operations used on the matrice
 
     matrice -> tuple(tuple)
     vector_constants -> tuple
     return -> tuple(tuple,tuple)
     '''
-    def isLineSwitchable(line1,n_line1,line2,n_line2):
+    def isLineSwitchable(line1,line1_pos,line2,line2_pos):
         '''Indicates wether line1 and line2 can switch with one another or not, so no 0's are in the diagonal'''
-        return (line1[n_line2] != 0 and line2[n_line1]!= 0)
+        return (line1[line2_pos] != 0 and line2[line1_pos]!= 0)
 
     matrice_temp = list(matrice)
     constants_temp = list(vector_constants)
 
-    for i in range(len(matrice)):
-        if matrice_temp[i][i] == 0: #if there is a zero on the main diagonal
+    for line in range(len(matrice)):
 
-            for j in range(len(matrice)):
-                if isLineSwitchable(matrice_temp[i],i,matrice_temp[j],j):
-                    matrice_temp[i],matrice_temp[j] = matrice_temp[j],matrice_temp[i]
-                    constants_temp[i],constants_temp[j] = constants_temp[j],constants_temp[i]
+        if matrice_temp[line][line] == 0: 
+
+            for column in range(len(matrice)):
+                if isLineSwitchable(matrice_temp[line],line,matrice_temp[column],column):
+                    matrice_temp[line],matrice_temp[column] = matrice_temp[column],matrice_temp[line]
+                    constants_temp[line],constants_temp[column] = constants_temp[column],constants_temp[line]
                     break
     
     return (tuple(matrice_temp),tuple(constants_temp))
-
-#print(retira_zeros_diagonal(((3,4,0,6,7),(3,5,7,0,9),(4,4,4,4,4),(0,1,2,3,4),(8,9,1,2,0)), (1, 2, 3,4,5)))
     
 def eh_diagonal_dominante(matrice):
     '''
@@ -387,7 +376,7 @@ def eh_diagonal_dominante(matrice):
     '''
 
     for i in range(len(matrice)):
-        if not (sum(abs(x) for x in matrice[i] if x != matrice[i][i]) <= abs(matrice[i][i])): #if a diagonal entry is not bigger then the sum of the restant entries in a row -> the diagional is not dominant
+        if not (sum(abs(x) for x in matrice[i] if x != matrice[i][i]) <= abs(matrice[i][i])):  
             return False
     return True
 
@@ -404,30 +393,22 @@ def resolve_sistema(matrice,vector_constants,precision):
     def invalid_argument():
         raise ValueError("resolve_sistema: argumentos invalidos")
 
-    def isErrorSmallerThanPrecision():
-        def equation_error(n_equation):
-            return abs(produto_interno(matrice[i],current_solution)-vector_constants[i])
-        
-        for i in range(len(matrice)):
-            if(equation_error(i) > precision):
-                return False
-        return True
-
-    # Argument validation -- missing one condition
+    # Argument validation----------------------
     if(type(matrice) != tuple or type(vector_constants) != tuple or \
-        (type(precision) != float and type(precision) != int) or precision <= 0 \
+        not isinstance(precision, (float,int)) or precision <= 0 \
             or len(matrice)!=len(vector_constants)):
         invalid_argument()
     
-    matrice_length = len(matrice)
+    matrice_order = len(matrice)
     for i in matrice:
-        if(type(i) != tuple or len(i) != matrice_length): #check if matrice is tuple and has length
+        if(type(i) != tuple or len(i) != matrice_order): 
             invalid_argument()
         for j in i:
-            if(type(j) != int and type(j) != float):
+            if not isinstance(j,(float,int)):
                 invalid_argument()
+                
     for i in vector_constants:
-        if(type(i) != int):
+        if not isinstance(i,(float,int)):
             invalid_argument()
     
     matrice,vector_constants = retira_zeros_diagonal(matrice,vector_constants)
@@ -435,17 +416,17 @@ def resolve_sistema(matrice,vector_constants,precision):
     if not eh_diagonal_dominante(matrice):
         raise ValueError("resolve_sistema: matriz nao diagonal dominante")
     
-    # Discover solution
+    for i in range(matrice_order): #If there are leftover 0s, because its wasnt possible to swap them
+        if not matrice[i][i]:
+            invalid_argument()
+        
+    # Discover solution to equation system------------------
     current_solution = tuple([0 for x in range(len(matrice))])
 
-    while not isErrorSmallerThanPrecision():
+    while not verifica_convergencia(matrice,vector_constants,current_solution,precision):
         temp_solution = ()
         for i in range(len(current_solution)):
             temp_solution += ((current_solution[i] + (vector_constants[i] - produto_interno(matrice[i],current_solution))/matrice[i][i]),)
         current_solution = temp_solution
 
     return current_solution
-
-#A4, c4 = ((2, -1, -1), (2, -9, 7), (-2, 5, -9)), (-8, 8, -6)
-#print(resolve_sistema(A4, c4, 1e-20))
-
