@@ -201,23 +201,21 @@ def atribui_mandatos(votes_per_party,num_representatives):
     quotients_per_party = calcula_quocientes(votes_per_party,num_representatives)
     representatives_party = []
 
-    for i in range(num_representatives):
-        biggest_quotient_left = biggest_quotient(quotients_per_party)
-        winner_parties = [i for i in quotients_per_party if biggest_quotient_left in quotients_per_party[i]]
+    curr_representatives = 0
+    winner_parties = [] #keeps tracks of the possible winners of a certain seat
+    biggest_quotient_left = biggest_quotient(quotients_per_party)
 
-        if(len(winner_parties) == 1):
+    while curr_representatives < num_representatives:
+        if(winner_parties):
             representatives_party.append(winner_parties[0])
-        else: #if there is a draw
+            quotients_per_party[winner_parties[0]].remove(biggest_quotient_left)
+            curr_representatives+=1
+            winner_parties.pop(0)
+        else:
+            biggest_quotient_left = biggest_quotient(quotients_per_party)
+            winner_parties = [quotient for quotient in quotients_per_party if biggest_quotient_left in quotients_per_party[quotient]]
             winner_parties.sort(key=which_has_less_votes)
-            for i in winner_parties:
-                representatives_party.append(i)
-                if(len(representatives_party) == num_representatives):
-                    return representatives_party
-
-        for i in quotients_per_party:
-            if(biggest_quotient_left in quotients_per_party[i]): 
-                quotients_per_party[i].remove(biggest_quotient_left)
-
+    
     return representatives_party
 
 
