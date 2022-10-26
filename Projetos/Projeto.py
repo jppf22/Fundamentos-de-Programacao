@@ -335,8 +335,7 @@ def verifica_convergencia(matrice,vector_constants,current_solution,precision):
     '''
     length = len(matrice) 
     for i in range(length):
-        summation = produto_interno(matrice[i],current_solution)
-        if abs(summation - vector_constants[i]) > precision:
+        if abs(produto_interno(matrice[i],current_solution) - vector_constants[i]) >= precision:
             return False
     return True
 
@@ -394,15 +393,6 @@ def resolve_sistema(matrice,vector_constants,precision):
     def invalid_argument():
         raise ValueError("resolve_sistema: argumentos invalidos")
 
-    def isErrorSmallerThanPrecision():
-        def equation_error(n_equation):
-            return abs(produto_interno(matrice[i],current_solution)-vector_constants[i])
-        
-        for i in range(len(matrice)):
-            if(equation_error(i) > precision):
-                return False
-        return True
-
     # Argument validation----------------------
     if(type(matrice) != tuple or type(vector_constants) != tuple or \
         not isinstance(precision, (float,int)) or precision <= 0 \
@@ -426,10 +416,14 @@ def resolve_sistema(matrice,vector_constants,precision):
     if not eh_diagonal_dominante(matrice):
         raise ValueError("resolve_sistema: matriz nao diagonal dominante")
     
+    for i in range(matrice_order): #If there are leftover 0s, because its wasnt possible to swap them
+        if not matrice[i][i]:
+            invalid_argument()
+        
     # Discover solution to equation system------------------
     current_solution = tuple([0 for x in range(len(matrice))])
 
-    while not isErrorSmallerThanPrecision():
+    while not verifica_convergencia(matrice,vector_constants,current_solution,precision):
         temp_solution = ()
         for i in range(len(current_solution)):
             temp_solution += ((current_solution[i] + (vector_constants[i] - produto_interno(matrice[i],current_solution))/matrice[i][i]),)
