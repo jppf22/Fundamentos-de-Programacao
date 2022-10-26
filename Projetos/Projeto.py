@@ -200,14 +200,21 @@ def atribui_mandatos(votes_per_party,num_representatives):
     quotients_per_party = calcula_quocientes(votes_per_party,num_representatives)
     representatives_party = []
 
-    for i in range(num_representatives):
+    #we are supposed to return a list with len = num_representatives, so we have to change our code
+    for i in range(num_representatives): #put a while here?
+        # if parties already in dispute, use last loop winner_parties
+        # else create a new one
         biggest_quotient_left = biggest_quotient(quotients_per_party)
         winner_parties = [i for i in quotients_per_party if biggest_quotient_left in quotients_per_party[i]]
 
         if(len(winner_parties) == 1):
             representatives_party.append(winner_parties[0])
-        else: #if there is a draw
+            #quotients_per_party[winner_parties[[0]].remove(biggest_quotient_left)
+        else: #if there is a draw -- we are supossed to add 1 per loop
             winner_parties.sort(key=which_has_less_votes)
+            #representativas_party.append(winner_parties[0])
+            #winner_parties remove first element
+            #quotients per party remove the corresponding quotient from its party
             for i in winner_parties:
                 representatives_party.append(i)
                 if(len(representatives_party) == num_representatives):
@@ -239,7 +246,7 @@ def obtem_partidos(info_about_elections):
     
     return sorted(names)
 
-def obtem_resultado_eleicoes(info_about_elections):
+def obtem_resultado_eleicoes(info_about_elections): #somehow we are still returning parties with no votes, which isn't acceptable parameter
     '''
     Returns a list with the results of the elections per political party
 
@@ -406,7 +413,7 @@ def resolve_sistema(matrice,vector_constants,precision):
                 return False
         return True
 
-    # Argument validation
+    # Argument validation -- missing one condition
     if(type(matrice) != tuple or type(vector_constants) != tuple or \
         (type(precision) != float and type(precision) != int) or precision <= 0 \
             or len(matrice)!=len(vector_constants)):
