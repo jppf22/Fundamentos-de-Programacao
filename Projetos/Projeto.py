@@ -238,7 +238,7 @@ def obtem_partidos(info_about_elections):
     
     return sorted(names)
 
-def obtem_resultado_eleicoes(info_about_elections): #somehow we are still returning parties with no votes, which isn't acceptable parameter
+def obtem_resultado_eleicoes(info_about_elections):
     '''
     Returns a list with the results of the elections per political party
 
@@ -249,7 +249,9 @@ def obtem_resultado_eleicoes(info_about_elections): #somehow we are still return
     def invalid_argument():
         raise ValueError("obtem_resultado_eleicoes: argumento invalido")
 
-    if(type(info_about_elections) != dict or len(info_about_elections) == 0 or any((type(x) != dict or len(x) != 2) for x in info_about_elections.values())):
+    if(type(info_about_elections) != dict or len(info_about_elections) == 0 \
+        or any((type(x) != str and len(x) == 0) for x in info_about_elections.keys()) \
+            or any((type(x) != dict or len(x) != 2) for x in info_about_elections.values())):
         invalid_argument()
     
     election_circles = list(info_about_elections.keys())
@@ -266,7 +268,7 @@ def obtem_resultado_eleicoes(info_about_elections): #somehow we are still return
             invalid_argument()
 
         #check if each party name is a string and if each party number of votes is a positive integer
-        if(any((type(x)!=int or x < 0) for x in info_about_elections[i]['votos'].values()) or any(type(x)!= str for x in info_about_elections[i]['votos'].keys())):
+        if(any((type(x)!=int or x < 0) for x in info_about_elections[i]['votos'].values()) or any((type(x)!= str or len(x) == 0) for x in info_about_elections[i]['votos'].keys())):
             invalid_argument()
         
 
@@ -430,3 +432,4 @@ def resolve_sistema(matrice,vector_constants,precision):
         current_solution = temp_solution
 
     return current_solution
+
