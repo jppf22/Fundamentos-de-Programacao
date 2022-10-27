@@ -397,7 +397,7 @@ def resolve_sistema(matrice,vector_constants,precision):
 
     # Argument validation----------------------
     if(type(matrice) != tuple or type(vector_constants) != tuple or \
-        not isinstance(precision, (float,int)) or precision <= 0 \
+        type(precision) != float or precision <= 0.0 \
             or len(matrice)!=len(vector_constants)):
         invalid_argument()
     
