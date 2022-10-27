@@ -218,7 +218,7 @@ def obtem_resultado_eleicoes(info_about_elections):
         raise ValueError("obtem_resultado_eleicoes: argumento invalido")
 
     if(type(info_about_elections) != dict or len(info_about_elections) == 0 \
-        or any((type(x) != str and len(x) == 0) for x in info_about_elections.keys()) \
+        or any((type(x) != str or len(x) == 0) for x in info_about_elections.keys()) \
             or any((type(x) != dict or len(x) != 2) for x in info_about_elections.values())):
         invalid_argument()
     
