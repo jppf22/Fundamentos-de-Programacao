@@ -68,7 +68,7 @@ def insere_espacos(string_clean, width):
     width -> int
     return -> str
     '''
-    
+
     def get_whitespaces(num):
         '''Returns a string made up of the necessary number of ' ' after a given word position'''
         res = ' ' 
@@ -87,7 +87,7 @@ def insere_espacos(string_clean, width):
        words = string_clean.split()
        string_final = ""
 
-       for i in range(0,len(words)-1): #the last word isn't followed by a whitespace there we use len(words)-1
+       for i in range(0,len(words)-1): #the last word isn't followed by a whitespace therefore we use len(words)-1
             string_final = string_final + words[i] + get_whitespaces(whitespaces_guaranteed+(whitespaces_left > 0))
             whitespaces_left -= 1
 
@@ -198,11 +198,9 @@ def obtem_partidos(info_about_elections):
     return -> list
     '''
     names = []
-    for election_circle in info_about_elections.values():
-        votes_circle = list(dict(election_circle).values())
-        parties_circle = votes_circle[1]
-        names_circle = list(parties_circle.keys())
-        for i in names_circle:
+    for election_circle in info_about_elections:
+        party_names = info_about_elections[election_circle]['votos'].keys()
+        for i in party_names:
             if(i not in names):
                 names.append(i)
     
