@@ -68,14 +68,7 @@ def insere_espacos(string_clean, width):
     width -> int
     return -> str
     '''
-
-    def num_whitespaces(dif,whitespaces_left):
-        '''Returns how many extra whitespaces must be put between each word'''
-        if(whitespaces_left == 1):
-            return dif
-        
-        return int(dif//whitespaces_left) + (dif%whitespaces_left > 0)
-
+    
     def get_whitespaces(num):
         '''Returns a string made up of the necessary number of ' ' after a given word position'''
         res = ' ' 
@@ -84,42 +77,19 @@ def insere_espacos(string_clean, width):
             num -= 1
         return res
 
-#
-#    string[] resultado final = string[width final que tu queres]
-#    int pos = 0
-
-#    int maxespacosnovos = X;
-#    int espaçoCada = calcula espaços entre palavras (espacos total/espacos)
-#    int restodadivisao = Y
-#    for  int i = 0 ; i < string_clean.length(); i++
-#        if string_clean[i] == espaco
-#          for int j = i ; j < espaçoCada ; j++
-#            resultados[pos++] = espaço
-#          if (restoDaDivisao > 0)
-#            resultado[pos++] = espaço
-#            restoDaDivisao--  
-#        else
-#          resultado[pos++] = string_clean[i];
-#
-#
-#
-
     if(len(string_clean.split()) >= 2):
        dif = width - len(string_clean) 
        whitespaces_original = string_clean.count(' ') # amount of whitespaces on the original string
-       
-       whitespaces_per_word = () #this tuple specifies how many extra whitespaces will be after each word
 
-       while whitespaces_original != 0:  #----------------- Aqui dá para não chamar num_whitespaces 3 vezes se colocarmos uma condição que soma se ainda houver resto da divisão dif//whitespaces_original
-            whitespaces_here = num_whitespaces(dif,whitespaces_original)
-            whitespaces_per_word += (whitespaces_here,)
-            dif -= whitespaces_here
-            whitespaces_original -= 1
+       whitespaces_guaranteed = dif // whitespaces_original
+       whitespaces_left = dif % whitespaces_original
        
        words = string_clean.split()
        string_final = ""
+
        for i in range(0,len(words)-1): #the last word isn't followed by a whitespace there we use len(words)-1
-            string_final = string_final + words[i] + get_whitespaces(whitespaces_per_word[i])
+            string_final = string_final + words[i] + get_whitespaces(whitespaces_guaranteed+(whitespaces_left > 0))
+            whitespaces_left -= 1
 
        return string_final + words[len(words)-1]
         
