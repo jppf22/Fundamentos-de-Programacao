@@ -226,16 +226,13 @@ def obtem_resultado_eleicoes(info_about_elections):
 
     for i in election_circles:
 
-        #check if each dictionary follows the correct format
-        if(list(info_about_elections[i].keys()) != ['deputados','votos']):
+        if('deputados' not in info_about_elections[i].keys() or 'votos' not in info_about_elections[i].keys()):
             invalid_argument()
         
-        #check if the type of the values is correct
         if(type(info_about_elections[i]['votos']) != dict or type(info_about_elections[i]['deputados']) != int \
             or len(info_about_elections[i]['votos']) == 0 or info_about_elections[i]['deputados'] == 0):
             invalid_argument()
-
-        #check if each party name is a string and if each party number of votes is a positive integer
+            
         if(any((type(x)!=int or x < 0) for x in info_about_elections[i]['votos'].values()) or any((type(x)!= str or len(x) == 0) for x in info_about_elections[i]['votos'].keys())):
             invalid_argument()
         
