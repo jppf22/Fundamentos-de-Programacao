@@ -9,3 +9,4 @@ def mover(n, ori, dest, aux):
         mover(n-1, aux, dest, ori)
          
 mover(3, 'E', 'D', 'C')
+
