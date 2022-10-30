@@ -69,13 +69,6 @@ def insere_espacos(string_clean, width):
     return -> str
     '''
 
-    def num_whitespaces(dif,whitespaces_left):
-        '''Returns how many extra whitespaces must be put between each word'''
-        if(whitespaces_left == 1):
-            return dif
-        
-        return int(dif//whitespaces_left) + (dif%whitespaces_left > 0)
-
     def get_whitespaces(num):
         '''Returns a string made up of the necessary number of ' ' after a given word position'''
         res = ' ' 
@@ -84,42 +77,19 @@ def insere_espacos(string_clean, width):
             num -= 1
         return res
 
-#
-#    string[] resultado final = string[width final que tu queres]
-#    int pos = 0
-
-#    int maxespacosnovos = X;
-#    int espaçoCada = calcula espaços entre palavras (espacos total/espacos)
-#    int restodadivisao = Y
-#    for  int i = 0 ; i < string_clean.length(); i++
-#        if string_clean[i] == espaco
-#          for int j = i ; j < espaçoCada ; j++
-#            resultados[pos++] = espaço
-#          if (restoDaDivisao > 0)
-#            resultado[pos++] = espaço
-#            restoDaDivisao--  
-#        else
-#          resultado[pos++] = string_clean[i];
-#
-#
-#
-
     if(len(string_clean.split()) >= 2):
        dif = width - len(string_clean) 
        whitespaces_original = string_clean.count(' ') # amount of whitespaces on the original string
-       
-       whitespaces_per_word = () #this tuple specifies how many extra whitespaces will be after each word
 
-       while whitespaces_original != 0:  #----------------- Aqui dá para não chamar num_whitespaces 3 vezes se colocarmos uma condição que soma se ainda houver resto da divisão dif//whitespaces_original
-            whitespaces_here = num_whitespaces(dif,whitespaces_original)
-            whitespaces_per_word += (whitespaces_here,)
-            dif -= whitespaces_here
-            whitespaces_original -= 1
+       whitespaces_guaranteed = dif // whitespaces_original
+       whitespaces_left = dif % whitespaces_original
        
        words = string_clean.split()
        string_final = ""
-       for i in range(0,len(words)-1): #the last word isn't followed by a whitespace there we use len(words)-1
-            string_final = string_final + words[i] + get_whitespaces(whitespaces_per_word[i])
+
+       for i in range(0,len(words)-1): #the last word isn't followed by a whitespace therefore we use len(words)-1
+            string_final = string_final + words[i] + get_whitespaces(whitespaces_guaranteed+(whitespaces_left > 0))
+            whitespaces_left -= 1
 
        return string_final + words[len(words)-1]
         
@@ -228,17 +198,15 @@ def obtem_partidos(info_about_elections):
     return -> list
     '''
     names = []
-    for election_circle in info_about_elections.values():
-        votes_circle = list(dict(election_circle).values())
-        parties_circle = votes_circle[1]
-        names_circle = list(parties_circle.keys())
-        for i in names_circle:
+    for election_circle in info_about_elections:
+        party_names = info_about_elections[election_circle]['votos'].keys()
+        for i in party_names:
             if(i not in names):
                 names.append(i)
     
     return sorted(names)
 
-def obtem_resultado_eleicoes(info_about_elections): #somehow we are still returning parties with no votes, which isn't acceptable parameter
+def obtem_resultado_eleicoes(info_about_elections):
     '''
     Returns a list with the results of the elections per political party
 
@@ -249,24 +217,23 @@ def obtem_resultado_eleicoes(info_about_elections): #somehow we are still return
     def invalid_argument():
         raise ValueError("obtem_resultado_eleicoes: argumento invalido")
 
-    if(type(info_about_elections) != dict or len(info_about_elections) == 0 or any((type(x) != dict or len(x) != 2) for x in info_about_elections.values())):
+    if(type(info_about_elections) != dict or len(info_about_elections) == 0 \
+        or any((type(x) != str or len(x) == 0) for x in info_about_elections.keys()) \
+            or any((type(x) != dict or len(x) != 2) for x in info_about_elections.values())):
         invalid_argument()
     
     election_circles = list(info_about_elections.keys())
 
     for i in election_circles:
 
-        #check if each dictionary follows the correct format
-        if(list(info_about_elections[i].keys()) != ['deputados','votos']):
+        if('deputados' not in info_about_elections[i].keys() or 'votos' not in info_about_elections[i].keys()):
             invalid_argument()
         
-        #check if the type of the values is correct
         if(type(info_about_elections[i]['votos']) != dict or type(info_about_elections[i]['deputados']) != int \
             or len(info_about_elections[i]['votos']) == 0 or info_about_elections[i]['deputados'] == 0):
             invalid_argument()
-
-        #check if each party name is a string and if each party number of votes is a positive integer
-        if(any((type(x)!=int or x < 0) for x in info_about_elections[i]['votos'].values()) or any(type(x)!= str for x in info_about_elections[i]['votos'].keys())):
+            
+        if(any((type(x)!=int or x < 0) for x in info_about_elections[i]['votos'].values()) or any((type(x)!= str or len(x) == 0) for x in info_about_elections[i]['votos'].keys())):
             invalid_argument()
         
 
@@ -395,7 +362,7 @@ def resolve_sistema(matrice,vector_constants,precision):
 
     # Argument validation----------------------
     if(type(matrice) != tuple or type(vector_constants) != tuple or \
-        not isinstance(precision, (float,int)) or precision <= 0 \
+        type(precision) != float or precision <= 0.0 \
             or len(matrice)!=len(vector_constants)):
         invalid_argument()
     
@@ -430,3 +397,4 @@ def resolve_sistema(matrice,vector_constants,precision):
         current_solution = temp_solution
 
     return current_solution
+

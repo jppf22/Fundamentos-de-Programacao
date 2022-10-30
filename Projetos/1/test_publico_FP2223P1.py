@@ -659,3 +659,4 @@ class TestPublicSistemasLineares:
     def test_resolve_sistema_error20(self):
         with pytest.raises(ValueError, match='resolve_sistema: matriz nao diagonal dominante'):
             resolve_sistema(((0, 0, 0), (0, 0, 0), (0, -1, 0)), (-8, 8, -6), 1e-20)
+
