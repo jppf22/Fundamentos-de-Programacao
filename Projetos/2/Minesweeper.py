@@ -1,15 +1,22 @@
 
 
 # TAD Gerador
+# Chosen representation - [int1,int2] : int1 - number of bits, int2 - seed
 
 def cria_gerador(bits,seed):
-    pass
+    if(type(bits) != int or bits not in (32,64) or type(seed) != int or seed <= 0):
+        raise ValueError("cria gerador: argumentos invalidos")
+    return [bits,seed]
+
+def cria_copia_gerador(generator):
+    return generator.copy()
 
 def obtem_estado(generator):
-    pass
+    return generator[1]
 
 def define_estado(generator,state):
-    pass
+    generator[1] = state
+    return state
 
 def atualiza_estado(generator, state):
     pass
