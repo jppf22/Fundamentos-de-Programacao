@@ -18,17 +18,25 @@ def define_estado(generator,state):
     generator[1] = state
     return state
 
-def atualiza_estado(generator, state):
-    pass
+def atualiza_estado(generator):
+    if generator[0] == 32:
+        generator[1] ^= (generator[1] << 13) & 0xFFFFFFFF
+        generator[1] ^= (generator[1] >> 17) & 0xFFFFFFFF
+        generator[1] ^= (generator[1] << 5) & 0xFFFFFFFF
+    elif(generator[0] == 64):
+        generator[1] ^= (generator[1] << 13) & 0xFFFFFFFFFFFFFFFF
+        generator[1] ^= (generator[1] >> 7) & 0xFFFFFFFFFFFFFFFF
+        generator[1] ^= (generator[1] << 17) & 0xFFFFFFFFFFFFFFFF
+    return generator[1]
 
 def eh_gerador(arg):
-    pass
+    return (type(arg) == list and arg[0] in (32,64) and type(arg[1]) == int and 0 < arg[1])
 
 def geradores_iguais(gene1,gene2):
-    pass
+    return (eh_gerador(gene1) and eh_gerador(gene2) and gene1[0] == gene2[0] and gene1[1] == gene2[1])
 
 def gerador_para_str(generator):
-    pass
+    return "xorshift" + str(generator[0]) + "(s=" + str(generator[1]) + ")"
 
 # Funções alto-nível para Gerador
 
