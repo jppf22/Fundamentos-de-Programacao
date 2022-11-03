@@ -106,6 +106,7 @@ print(soma_quadrados_impares([1,2,3,4,5,6]))
 
 # Exercicio 6 ------------------------------------
 
+'''
 def eh_primo(n):
     if n == 1:
         return False
@@ -119,6 +120,7 @@ def não_primos(n):
     return list(filter(lambda x: not eh_primo(x),range(1,n+1))) #começa em 1 porque são inteiros positivos
 
 print(não_primos(10))
+'''
 
 # Exercicio 7 --------------------------------------
 
@@ -132,9 +134,23 @@ def filtra_pares(n):
 
 # Exercicio 8 -------------------------------------
 
+'''
 def lista_digitos(n):
     return list(map(lambda x: int(x), str(n)))
 
-print(lista_digitos(123))
+#print(lista_digitos(123))
 
+# Exercicio 9 -----------------------------------
 
+def produto_digitos(n,pred):
+    return reduce(lambda x,y:x*y, filter(pred,lista_digitos(n)))
+
+#print(produto_digitos(12345, lambda x: x > 3))
+
+# Exercicio 10 ----------------------------------
+
+def apenas_digitos_impares(n):
+    return reduce(lambda x,y: x*10+y,filter(lambda x: x % 2 != 0, lista_digitos(n)))
+
+#print(apenas_digitos_impares(123456789))
+'''
