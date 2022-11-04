@@ -1,11 +1,11 @@
 
 
 # TAD Gerador
-# Chosen representation - [int1,int2] : int1 - number of bits, int2 - seed
+# Chosen representation - type: list -> [bits,seed]
 
 def cria_gerador(bits,seed):
     if(type(bits) != int or bits not in (32,64) or type(seed) != int or seed <= 0):
-        raise ValueError("cria gerador: argumentos invalidos")
+        raise ValueError("cria_gerador: argumentos invalidos")
     return [bits,seed]
 
 def cria_copia_gerador(generator):
@@ -38,35 +38,118 @@ def geradores_iguais(gene1,gene2):
 def gerador_para_str(generator):
     return "xorshift" + str(generator[0]) + "(s=" + str(generator[1]) + ")"
 
-# Funções alto-nível para Gerador
+# Funções alto-nível para Gerador 
 
 def gera_numero_aleatorio(generator,max):
-    pass
+    '''
+    Returns a random number between 1 and max
+
+    generator ->
+    max -> int
+    return -> int
+    '''
+    atualiza_estado(generator)
+    return 1 + (obtem_estado(generator) % max)
+
 
 def gera_carater_aleatorio(generator,max):
-    pass
+    '''
+    Returns a random character between 'A' and the uppercase character max
+
+    generator ->
+    max -> str
+    return -> str
+    '''
+    atualiza_estado(generator)
+    max = max.upper()
+
+    #Creates a string using .join() on an iterable made up of the characters 
+    #between 'A' and the max char, including these.
+    between_A_max = ''.join((chr(x) for x in range(ord('A'),ord(max)+1))) 
+
+    return between_A_max[obtem_estado(generator) % len(between_A_max)]
+
+
 
 # --------------------------------------------------
 
-# TAD Coordenada
+# TAD Coordenada -- imutable datatype!
+# Chosen representation: type: tuple -> (col,lin) 
 
 def cria_coordenada(col,lin):
-    pass
+    '''
+    Returns a coordinate tuple where the first value is a str representing the column and the second a int representing the line
+
+    col -> str
+    lin -> int
+    return -> tuple(str,int)
+    '''
+    if(type(col) != str or type(lin) != int or not('A' <= col <= 'Z') or not(1 <= lin <= 99)):
+        raise ValueError("cria_coordenada: argumentos invalidos")
+
+    return (col,lin)
 
 def obtem_coluna(coordinate):
-    pass
+    '''
+    Returns the column value of the given coordinate
+
+    coordinate -> tuple(str,int)
+    return -> str
+    '''
+    return coordinate[0]
 
 def obtem_linha(coordinate):
-    pass
+    '''
+    Returns the line value of the given coordinate
+
+    coordinate -> tuple(str,int)
+    return -> int
+    '''
+    return coordinate[1]
+
+def eh_coordenada(arg):
+    '''
+    Returns True if the given argument correctly represents a coordinate,
+    that is, if it follows the following representation: (col,lin) where col is a string and lin an int
+
+    arg -> universal
+    return -> bool
+    '''
+    return (type(arg) == tuple and len(arg) == 2 and type(arg[0]) == str and type(arg[1]) == int)
 
 def coordenadas_iguais(c1,c2):
-    pass
+    '''
+    Returns True if both coordinates are equal
+
+    c1,c2 -> tuple(str,int)
+    return -> bool
+    '''
+    return (eh_coordenada(c1) and eh_coordenada(c2) and c1[0] == c2[0] and c1[1] == c2[1])
 
 def coordenada_para_str(coordinate):
-    pass
+    '''
+    Returns a string that represents the coordinate in the format: "(col)(lin)" or "(col)0(lin)", if lin is only 1 digit
+
+    coordinate -> tuple(str,int) = (col,lin)
+    return -> str
+    '''
+    if(coordinate[1] < 10):
+        return coordinate[0] + "0" + str(coordinate[1])
+    else:
+        return coordinate[0] + str(coordinate[1])
+
 
 def str_para_coordenada(c_as_text):
-    pass
+    '''
+    Returns the coordinate represented by the given string
+    
+    c_as_text -> str
+    return -> tuple(str,int)
+    '''
+    if(c_as_text[1] == '0'):
+        return (c_as_text[0],int(c_as_text[2]))
+    else:
+        return (c_as_text[0],int(c_as_text[1]+c_as_text[2]))
 
 # Funções alto nível para Coordenada
 
