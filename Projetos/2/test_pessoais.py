@@ -64,6 +64,9 @@ class TestPublicGerador:
             atualiza_estado(g1) 
         assert(gerador_para_str(g1) == "xorshift32(s=2647435461)")
 
+
+
+
 class TestPublicParcela:
 
     def test_cria_parcela(self):
@@ -74,8 +77,27 @@ class TestPublicParcela:
         p2 = cria_copia_parcela(p1)
         assert(id(p1) != id(p2))
     
+    def test_limpa_parcela(self):
+        p1 = cria_parcela()
+        assert(id(limpa_parcela(p1)) == id(p1) and p1 == ["limpa",False])
+
+    def test_marca_parcela(self):
+        p1 = cria_parcela()
+        assert(id(marca_parcela(p1)) == id(p1) and p1 == ["marcada",False])
+    
+    def test_desmarca_parcela(self):
+        p1 = cria_parcela()
+        assert(id(desmarca_parcela(p1)) == id(p1) and p1 == ["tapada",False])
+
+    def test_esconde_mina(self):
+        p1 = cria_parcela()
+        assert(id(esconde_mina(p1)) == id(p1) and p1 == ["tapada",True])
+
     def test_eh_parcela_falso(self):
         assert(eh_parcela(["outroestado",False]) == False)
+    
+    def test_eh_parcela_vdd(self):
+        assert(eh_parcela(["tapada",True]) == True)
     
     def test_parcelas_iguais_default(self):
         assert(parcelas_iguais(cria_parcela(),cria_parcela()) == True)
@@ -83,18 +105,26 @@ class TestPublicParcela:
     def test_parcelas_iguais_vdd(self):
         p1 = ["tapada",True]
         p2 = ["tapada",True]
-        assert((p1 == p2) == True)
+        assert(parcelas_iguais(p1,p2) == True)
     
     def test_parcelas_iguais_diff(self):
         p1 = ["tapada",False]
         p2 = ["marcada",True]
-        assert((p1 == p2) == False)
+        assert(parcelas_iguais(p1,p2) == False)
     
+    def test_parcela_para_str_LimpaComMina(self):
+        assert(parcela_para_str((["limpa",True])) == "X")
     
-
-
-
+    def test_parcela_para_str_LimpaSemMina(self):
+        assert(parcela_para_str((["limpa",False])) == "?")
     
+    def test_parcela_para_str_Tapada(self):
+        assert(parcela_para_str((["tapada",True])) == "#")
+    
+    def test_parcela_para_str_Marcada(self):
+        assert(parcela_para_str((["marcada",True])) == "@")
+    
+ 
 class TestPublicCoordenada:
 
     #col needs to be str
@@ -133,6 +163,18 @@ class TestPublicCoordenada:
     def test_eh_coordenada_mais2elementos(self):
         assert(eh_coordenada(('A',4,5)) == False)
     
+    def test_eh_coordenada_lin_fora_campo1(self):
+        assert(eh_coordenada(('A',0)) == False)
+    
+    def test_eh_coordenada_lin_fora_campo2(self):
+        assert(eh_coordenada(('A',100)) == False)
+    
+    def test_eh_coordenada_col_fora_campo1(self):
+        assert(eh_coordenada(('@',1)) == False)
+    
+    def test_eh_coordenada_col_fora_campo2(self):
+        assert(eh_coordenada(('[',1)) == False)
+    
     def test_coordenadas_iguais_vdd(self):
         assert(coordenadas_iguais(('A',4),('A',4)) == True)
     
@@ -151,9 +193,48 @@ class TestPublicCoordenada:
     def test_str_para_coordenada_2(self):
         assert(str_para_coordenada("A19") == ('A',19))
 
+    def test_obtem_coordenadas_vizinhas_cantoSE(self):
+        c1 = cria_coordenada('A', 1)
+        t = obtem_coordenadas_vizinhas(c1)
+        assert ('B01', 'B02', 'A02') == tuple(coordenada_para_str(p) for p in t)
+
+    def test_obtem_coordenadas_vizinhas_cantoSD(self):
+        c1 = cria_coordenada('Z', 1)
+        t = obtem_coordenadas_vizinhas(c1)
+        assert ('Z02', 'Y02', 'Y01') == tuple(coordenada_para_str(p) for p in t)
     
+    def test_obtem_coordenadas_vizinhas_cantoIE(self):
+        c1 = cria_coordenada('A', 99)
+        t = obtem_coordenadas_vizinhas(c1)
+        assert ('A98', 'B98', 'B99') == tuple(coordenada_para_str(p) for p in t)
     
+    def test_obtem_coordenadas_vizinhas_cantoID(self):
+        c1 = cria_coordenada('Z', 99)
+        t = obtem_coordenadas_vizinhas(c1)
+        assert ('Y98','Z98', 'Y99') == tuple(coordenada_para_str(p) for p in t)
     
+    def test_obtem_coordenadas_vizinhas_Esquerda(self):
+        c1 = cria_coordenada('A', 22)
+        t = obtem_coordenadas_vizinhas(c1)
+        assert ('A21','B21', 'B22','B23','A23') == tuple(coordenada_para_str(p) for p in t)
     
+    def test_obtem_coordenadas_vizinhas_Direita(self):
+        c1 = cria_coordenada('Z', 22)
+        t = obtem_coordenadas_vizinhas(c1)
+        assert ('Y21','Z21', 'Z23','Y23','Y22') == tuple(coordenada_para_str(p) for p in t)
+
+    def test_obtem_coordenadas_vizinhas_Cima(self):
+        c1 = cria_coordenada('E', 1)
+        t = obtem_coordenadas_vizinhas(c1)
+        assert ('F01','F02', 'E02','D02','D01') == tuple(coordenada_para_str(p) for p in t)
     
+    def test_obtem_coordenadas_vizinhas_Baixo(self):
+        c1 = cria_coordenada('E', 99)
+        t = obtem_coordenadas_vizinhas(c1)
+        assert ('D98','E98', 'F98','F99','D99') == tuple(coordenada_para_str(p) for p in t)
+    
+    def test_obtem_coordenadas_vizinhas_CasoNormal(self):
+        c1 = cria_coordenada('E', 5)
+        t = obtem_coordenadas_vizinhas(c1)
+        assert ('D04','E04','F04','F05','F06','E06','D06','D05') == tuple(coordenada_para_str(p) for p in t)
     
