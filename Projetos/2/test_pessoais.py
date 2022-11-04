@@ -44,22 +44,56 @@ class TestPublicGerador:
         assert(eh_gerador([32,1]) == True)
     
     def test_geradores_iguais_vdd(self):
-        assert(geradores_iguais([32,1],[32,1]) == True)
+        assert(geradores_iguais(cria_gerador(32,1),cria_gerador(32,1)) == True)
     
     def test_geradores_iguais_tiposdiff(self):
         assert(geradores_iguais([32,1],(32,1)) == False)
     
     def test_geradores_iguais_seeddiff(self):
-        assert(geradores_iguais([32,2],[32,1]) == False)
+        assert(geradores_iguais(cria_gerador(32,2),cria_gerador(32,1)) == False)
     
     def test_geradores_iguais_bitdiff(self):
-        assert(geradores_iguais([32,1],[64,1]) == False)
+        assert(geradores_iguais(cria_gerador(32,1),cria_gerador(64,1)) == False)
     
     def test_gerador_para_str_vdd(self):
-        assert(gerador_para_str([32,1]) == "xorshift32(s=1)")
+        assert(gerador_para_str(cria_gerador(32,1)) == "xorshift32(s=1)")
     
     def test_geradpr_para_str_seedgrande(self):
         g1 = cria_gerador(32,1)
         for n in range(3):
             atualiza_estado(g1) 
         assert(gerador_para_str(g1) == "xorshift32(s=2647435461)")
+
+
+
+class TestPublicParcela:
+
+    def test_cria_parcela(self):
+        assert(cria_parcela() == ["tapada",False])
+    
+    def test_cria_copia_parcela(self):
+        p1 = cria_parcela()
+        p2 = cria_copia_parcela(p1)
+        assert(id(p1) != id(p2))
+    
+    def test_eh_parcela_falso(self):
+        assert(eh_parcela(["outroestado",False]) == False)
+    
+    def test_parcelas_iguais_default(self):
+        assert(parcelas_iguais(cria_parcela(),cria_parcela()) == True)
+
+    def test_parcelas_iguais_vdd(self):
+        p1 = ["tapada",True]
+        p2 = ["tapada",True]
+        assert((p1 == p2) == True)
+    
+    def test_parcelas_iguais_diff(self):
+        p1 = ["tapada",False]
+        p2 = ["marcada",True]
+        assert((p1 == p2) == False)
+    
+    
+
+
+
+    
