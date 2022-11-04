@@ -1,7 +1,7 @@
 
 
 # TAD Gerador
-# Chosen representation - type: list -> [bits,seed]
+# Chosen representation - type: list -> [int,int] = [bits,seed]
 
 def cria_gerador(bits,seed):
     if(type(bits) != int or bits not in (32,64) or type(seed) != int or seed <= 0):
@@ -56,13 +56,11 @@ def gera_carater_aleatorio(generator,max):
     '''
     Returns a random character between 'A' and the uppercase character max
 
-    generator ->
+    generator -> generator TAD
     max -> str
     return -> str
     '''
     atualiza_estado(generator)
-    max = max.upper()
-
     #Creates a string using .join() on an iterable made up of the characters 
     #between 'A' and the max char, including these.
     between_A_max = ''.join((chr(x) for x in range(ord('A'),ord(max)+1))) 
@@ -74,7 +72,7 @@ def gera_carater_aleatorio(generator,max):
 # --------------------------------------------------
 
 # TAD Coordenada -- imutable datatype!
-# Chosen representation: type: tuple -> (col,lin) 
+# Chosen representation: type: tuple -> (str,int) = (col,lin)
 
 def cria_coordenada(col,lin):
     '''
@@ -115,7 +113,7 @@ def eh_coordenada(arg):
     arg -> universal
     return -> bool
     '''
-    return (type(arg) == tuple and len(arg) == 2 and type(arg[0]) == str and type(arg[1]) == int)
+    return (type(arg) == tuple and len(arg) == 2 and type(arg[0]) == str and type(arg[1]) == int and ('A' <= arg[0] <= 'Z') and (1 <= arg[1] <= 99))
 
 def coordenadas_iguais(c1,c2):
     '''
@@ -154,58 +152,215 @@ def str_para_coordenada(c_as_text):
 # Funções alto nível para Coordenada
 
 def obtem_coordenadas_vizinhas(coordinate):
-    pass
+    '''
+    Returns a tuple containing the neighbour coordinates to the given coordinate, 
+    starting in the upper-left diagonal position and iterating clockwise  
+
+    coordinate -> coordinate TAD
+    return -> tuple(coordinate TAD,coordinate TAD,....) 
+    '''
+
+    def sumCol(amount):
+        return chr(ord(this_col)+amount)
+
+    this_lin,this_col = obtem_linha(coordinate),obtem_coluna(coordinate)
+
+    '''
+    The values in the tuples represent the differences in the given coordinate values and the neighbour coordinate values
+    Example: We start with the upper-left diagonal position so first pair has a line and column difference of -1
+    since it is one line above and one column before compared to the given coordinate
+    '''
+    neighbours_lin_diff = (-1,-1,-1,0,1,1,1,0)
+    neighbours_col_diff = (-1,0,1,1,1,0,-1,-1)
+
+    valid_neighbours = ()
+
+    for i in range(8): #We know that a coordinate has 8 neighbours, if all of its neighbours are valid coordinates
+        neighbour_lin = this_lin+neighbours_lin_diff[i]
+        neighbour_col = sumCol(neighbours_col_diff[i])
+
+        if((1 <= neighbour_lin <= 99) and ('A' <= neighbour_col <= 'Z')):
+            valid_neighbours += (cria_coordenada(neighbour_col,neighbour_lin),) 
+
+    return valid_neighbours   
 
 def obtem_coordenada_aleatoria(coordinate, generator):
-    pass
+    '''
+    Returns a random coordinate with a column value between 'A' and the given coordinate's column value
+    and a line value between 1 and the given coordinate's line value.
 
+    coordinate -> coordinate TAD 
+    generator -> generator TAD
+    return -> coordinate TAD
+    '''
+    col_random = gera_carater_aleatorio(generator,obtem_coluna(coordinate))
+    lin_random = gera_numero_aleatorio(generator,obtem_linha(coordinate))
+    return cria_coordenada(col_random,lin_random)
+    
 # --------------------------------------------------------
 
 # TAD Parcela
+# Chosen representation: type: list -> [str,bool] = [state,isThereMine]
 
 def cria_parcela():
-    pass
+    '''
+    Returns a parcel that is both hidden and without a mine
+    
+    return -> list[str,bool]
+    '''
+    return ["tapada",False]
+
 
 def cria_copia_parcela(parcel):
-    pass
+    '''
+    Returns a copy of the given parcel 
+
+    parcel -> list[str,bool]
+    return -> list[str,bool]
+    '''
+    return parcel.copy()
 
 def limpa_parcela(parcel):
-    pass
+    '''
+    Modifies the state of the given parcel to "limpa" and then returns it
+
+    parcel -> list[str,bool]
+    return -> list[str,bool]
+    '''
+    parcel[0] = "limpa"
+    return parcel
 
 def marca_parcela(parcel):
-    pass
+    '''
+    Modifies the state of the given parcel to "marcada" and then returns it
+
+    parcel -> list[str,bool]
+    return -> list[str,bool]
+    '''
+    parcel[0] = "marcada"
+    return parcel
 
 def desmarca_parcela(parcel):
-    pass
+    '''
+    Modifies the state of the given parcel to "tapada" and then returns it
+
+    parcel -> list[str,bool]
+    return -> list[str,bool]
+    '''
+    parcel[0] = "tapada"
+    return parcel
 
 def esconde_mina(parcel):
-    pass
+    '''
+    Hides a mine in the given parcel (changes its isThereMine variable to True) and returns it
+
+    parcel -> list[str,bool]
+    return -> list[str,bool]
+    '''
+    parcel[1] = True
+    return parcel
 
 def eh_parcela(arg):
-    pass
+    '''
+    Returns True if the given argument correctly represents a parcel,
+    that is, if it follows the following representation: (state,isThereMine) 
+    where state is a string and isThereMine a bool
 
-def eh_parcela_tapa(parcel):
-    pass
+    arg -> universal
+    return -> bool
+    '''
+    return (type(arg) == list and type(arg[0]) == str and type(arg[1]) == bool \
+        and (arg[0] in ("tapada","limpa","marcada")))
+
+def eh_parcela_tapada(parcel):
+    '''
+    Returns True if the state of the given parcel is "tapada"
+    
+    parcel -> list[str,bool]
+    return -> bool
+    '''
+    return (parcel[0] == "tapada")
+
 
 def eh_parcela_marcada(parcel):
-    pass
+    '''
+    Returns True if the state of the given parcel is "marcada"
+    
+    parcel -> list[str,bool]
+    return -> bool
+    '''
+    return (parcel[0] == "marcada")
 
 def eh_parcela_limpa(parcel):
-    pass
+    '''
+    Returns True if the state of the given parcel is "limpa"
+    
+    parcel -> list[str,bool]
+    return -> bool
+    '''
+    return (parcel[0] == "limpa")
 
 def eh_parcela_minada(parcel):
-    pass
+    '''
+    Returns True if the given parcel is hiding a mine
+    
+    parcel -> list[str,bool]
+    return -> bool
+    '''
+    return parcel[1]
 
 def parcelas_iguais(p1,p2):
-    pass
+    '''
+    Returns True if both parcels are equal
+
+    p1 -> list[str,bool]
+    p2 -> list[str,bool]
+    return -> bool
+    '''
+    return (eh_parcela(p1) and eh_parcela(p2) and p1[0] == p2[0] and p1[1] == p2[1])
 
 def parcela_para_str(parcel):
-    pass
+    '''
+    Returns a string that represents the parcel depending on its state (its first element) 
+    and wether or not they hide a mine (its second element):
+    - '#' for parcels with state "tapada"
+    - '@' for parcels with state "marcada"
+    - '?' for parcels with state "limpa" and not hiding a mine
+    - 'X' for parcels with state "limpa" and hiding a mine
+    
+    parcel -> list[str,bool]
+    return -> str
+    '''
+    state = parcel[0]
+    isThereMine = parcel[1]
+
+    if isThereMine and state == "limpa":
+        return 'X'
+    elif state == "limpa":
+        return '?'
+    elif state == "marcada":
+        return '@'
+    elif state == "tapada":
+        return "#"
 
 # Funções de alto nível para Parcela
-
 def alterna_bandeira(parcel):
-    pass
+    '''
+    Modifies the given parcel state to "marcada" if it previously was "tapada" and vice-versa ("tapada" if "marcada")
+    Otherwise doesn't modify the given parcel. Returns True if the given parcel was destructively modified.
+
+    parcel -> parcel TAD
+    return -> bool
+    '''
+
+    if(eh_parcela_marcada(parcel)):
+        desmarca_parcela(parcel)
+    elif(eh_parcela_tapada(parcel)):
+        marca_parcela(parcel)
+    else:
+        return False
+    
+    return True
 
 #---------------------------------------------------
 
