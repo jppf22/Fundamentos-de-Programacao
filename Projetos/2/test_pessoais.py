@@ -238,3 +238,56 @@ class TestPublicCoordenada:
         t = obtem_coordenadas_vizinhas(c1)
         assert ('D04','E04','F04','F05','F06','E06','D06','D05') == tuple(coordenada_para_str(p) for p in t)
     
+class TestPublicCampo:
+
+    def test_cria_campo_umaparcela(self):
+        assert((cria_campo('A',1) == [[["tapada",False]]]) == True)
+    
+    def test_cria_campo_max(self):
+        assert((cria_campo('Z',99) == [[cria_parcela() for x in range(ord('Z')-ord('A')+1)] for y in range(99)]) == True)
+
+    def test_cria_campo_error1(self):
+        with pytest.raises(ValueError,match="cria_campo: argumentos invalidos"):
+            cria_campo('A','100')
+    
+    def test_cria_campo_error2(self):
+        with pytest.raises(ValueError,match="cria_campo: argumentos invalidos"):
+            cria_campo(1,100)
+    
+    def test_cria_copia_campo(self):
+        c = cria_campo('E',5)
+        assert((id(c) != id(cria_copia_campo(c))) == True)
+
+    def test_obtem_collin_max(self):
+        c = cria_campo('Z',99)
+        assert((obtem_ultima_coluna(c) == 'Z' and obtem_ultima_linha(c) == 99) == True)
+    
+    def test_obtem_collin_min(self):
+        c = cria_campo('A',1)
+        assert((obtem_ultima_coluna(c) == 'A' and obtem_ultima_linha(c) == 1) == True)
+    
+    def test_obtem_ultima_colunalinha1(self):
+        c = cria_campo('B',5)
+        assert((obtem_ultima_coluna(c) == 'B' and obtem_ultima_linha(c) == 5) == True)
+
+    def test_obtem_ultima_colunalinha2(self):
+        c = cria_campo('E',2)
+        assert((obtem_ultima_coluna(c) == 'E' and obtem_ultima_linha(c) == 2) == True)
+    
+    def test_obtem_coordenadas_normal(self):
+        c = cria_campo('C',3)
+        limpa_parcela(obtem_parcela(c,cria_coordenada('A',1)))
+        limpa_parcela(obtem_parcela(c,cria_coordenada('B',2))) 
+        limpa_parcela(obtem_parcela(c,cria_coordenada('C',3)))
+        assert((obtem_coordenadas(c,"limpas") == (cria_coordenada('A',1),cria_coordenada('B',2),cria_coordenada('C',3))) == True) 
+
+    def test_obtem_coordenadas_min(self):
+        c = cria_campo('A',1)
+        assert((obtem_coordenadas(c,"tapadas") == (cria_coordenada('A',1),)) == True)   
+    
+    def test_obtem_coordenadas_max(self):
+        c = cria_campo('Z',99)
+        letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        nums = range(1,100)
+        assert((obtem_coordenadas(c,"tapadas") == tuple(cria_coordenada(x,y) for y in nums for x in letras)) == True)   
+    
