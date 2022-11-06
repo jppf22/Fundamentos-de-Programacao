@@ -291,3 +291,89 @@ class TestPublicCampo:
         nums = range(1,100)
         assert((obtem_coordenadas(c,"tapadas") == tuple(cria_coordenada(x,y) for y in nums for x in letras)) == True)   
     
+    def test_obtem_numero_minas_vizinhas_test1(self):
+        c = cria_campo('E',5)
+        esconde_mina(obtem_parcela(c,cria_coordenada('A',1)))
+        esconde_mina(obtem_parcela(c,cria_coordenada('A',3)))
+        esconde_mina(obtem_parcela(c,cria_coordenada('C',2)))
+        esconde_mina(obtem_parcela(c,cria_coordenada('B',3)))
+        assert((obtem_numero_minas_vizinhas(c,cria_coordenada('B',2)) == 4) == True)
+    
+    def test_obtem_numero_minas_vizinhas_test2(self):
+        c = cria_campo('E',5)
+        esconde_mina(obtem_parcela(c,cria_coordenada('A',1)))
+        esconde_mina(obtem_parcela(c,cria_coordenada('A',3)))
+        esconde_mina(obtem_parcela(c,cria_coordenada('C',2)))
+        esconde_mina(obtem_parcela(c,cria_coordenada('B',3)))
+        assert((obtem_numero_minas_vizinhas(c,cria_coordenada('A',2)) == 3) == True)
+    
+    def test_obtem_numero_minas_vizinhas_test3(self):
+        c = cria_campo('E',5)
+        esconde_mina(obtem_parcela(c,cria_coordenada('A',1)))
+        esconde_mina(obtem_parcela(c,cria_coordenada('A',3)))
+        esconde_mina(obtem_parcela(c,cria_coordenada('C',2)))
+        esconde_mina(obtem_parcela(c,cria_coordenada('B',3)))
+        assert((obtem_numero_minas_vizinhas(c,cria_coordenada('B',1)) == 2) == True)
+    
+    def test_obtem_numero_minas_vizinhas_nenhuma(self):
+        c = cria_campo('E',5)
+        esconde_mina(obtem_parcela(c,cria_coordenada('A',1)))
+        esconde_mina(obtem_parcela(c,cria_coordenada('A',3)))
+        esconde_mina(obtem_parcela(c,cria_coordenada('C',2)))
+        esconde_mina(obtem_parcela(c,cria_coordenada('B',3)))
+        assert((obtem_numero_minas_vizinhas(c,cria_coordenada('E',5)) == 0) == True)
+    
+    def test_obtem_numero_minas_vizinhas_todas(self):
+        c = cria_campo('C',3)
+        coordinate_test = cria_coordenada('B',2)
+        for i in obtem_coordenadas_vizinhas(coordinate_test):
+            esconde_mina(obtem_parcela(c,i))
+        assert((obtem_numero_minas_vizinhas(c,coordinate_test) == 8) == True)
+    
+    def test_eh_campo_vdd_1elemento(self):
+        assert((eh_campo([[["tapada",False]]])) == True)
+    
+    def test_eh_campo_vdd_2elementos(self):
+        assert((eh_campo([[["tapada",False]],[["tapada",False]]])) == True)
+    
+    def test_eh_campo_falso_vazio(self):
+        assert((eh_campo([[]])) == False)
+    
+    def test_eh_campo_falso_tipo_errado(self):
+        assert((eh_campo(((["tapada",False])))) == False)
+    
+    def test_eh_campo_falso_formato_errado(self):
+        assert((eh_campo([["tapada",False]])) == False)
+    
+    def test_eh_coordenada_do_campo_vdd(self):
+        c1 = cria_campo('E',5)
+        assert((eh_coordenada_do_campo(c1,cria_coordenada('C',3))) == True)
+    
+    def test_eh_coordenada_do_campo_vdd_min(self):
+        c1 = cria_campo('A',1)
+        assert((eh_coordenada_do_campo(c1,cria_coordenada('A',1))) == True)
+    
+    def test_eh_coordenada_do_campo_vdd_max(self):
+        c1 = cria_campo('Z',99)
+        assert((eh_coordenada_do_campo(c1,cria_coordenada('Z',99))) == True)
+    
+    def test_eh_coordenada_do_campo_falso(self):
+        c1 = cria_campo('E',5)
+        assert((eh_coordenada_do_campo(c1,cria_coordenada('F',3))) == False)
+    
+    def test_campos_iguais_vdd(self):
+        c1 = cria_campo('A',1)
+        c2 = [[["tapada",False]]]
+        assert((c1 == c2) == True)
+    
+    def test_campos_iguais_falso_min(self):
+        c1 = cria_campo('A',1)
+        c2 = [[["tapada",True]]]
+        assert((c1 == c2) == False)
+    
+    def test_campos_iguais_falso_1diff(self):
+        c1 = cria_campo('Z',99)
+        c2 = cria_campo('Z',99)
+        esconde_mina(obtem_parcela(c2,cria_coordenada('D',5)))
+        assert((c1 == c2) == False)
+    

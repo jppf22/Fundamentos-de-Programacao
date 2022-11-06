@@ -7,4 +7,4 @@
     - **Dúvidas:**
         - Nas docstrings é suposto referirmo-nos aos nossos TADs como tipos de dados ou continuar a denotar a nossa própria representação (Ex: o return da função coordenadas_vizinhas deve ser do tipo tuple com elementos do tipo 'coordenada' ou tuple com elementos do tipo tuple compostos por um elemento do tipo do string e outro do tipo int, como é no meu caso)
         - Nas docstrings das funções de alto nível referimo-nos ao TAD a nossa implementação ou simplesmente ao seu nome (Ex: em alterna_bandeira dizemos que o tipo de p é parcela ou que definimos)
-       
+       - Podemos usar funções definidas posteriormente a uma certa função? Ou apenas podemos usar as que vêem anteriormente ao ponto onde estamos? Podemos usar funções de alto nível de outros TADs na definição de operações básicas de um TAD diferente? (Ex: obtem_numero_minas_vizinhas)

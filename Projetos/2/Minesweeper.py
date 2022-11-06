@@ -423,6 +423,12 @@ def obtem_parcela(field, coordinate):
     #In the case of the columns, this is not needed since ord('A') - ord('A') = 0 which corresponds to the first index
     return field[obtem_linha(coordinate)-1][ord(obtem_coluna(coordinate))-ord('A')]
 
+def colParaIndex(col):
+    return ord(col)-ord('A')
+
+def IndexParaCol(ind):
+        return chr(ind+ord('A'))
+
 def obtem_coordenadas(field,state): #Can be optimized - Será que dá para usar funcionais aqui
     '''
     Returns the tuple containing the coordinates of the field depending on the state of each corresponding parcel
@@ -431,13 +437,6 @@ def obtem_coordenadas(field,state): #Can be optimized - Será que dá para usar 
     state -> str
     return -> tuple(coordenada)
     '''
-
-    def colParaIndex(col):
-        return ord(col)-ord('A')
-    
-    def IndexParaCol(ind):
-        return chr(ind+ord('A'))
-
     func = None
     if(state == "limpas"):
         func = eh_parcela_limpa
@@ -458,27 +457,75 @@ def obtem_coordenadas(field,state): #Can be optimized - Será que dá para usar 
 
     return res
 
-def obtem_numero_minas_vizinhas(field, coordinate):
+def obtem_numero_minas_vizinhas(field, coordinate): # Could do in another way
     '''
-    Returns the number of neighbour parcels of the parcel contained in the given coordinate that are hiding mines
+    Returns the number of neighbour parcels hiding mines 
 
     field -> campo
     coordinate -> coordenada
     return -> int
     '''
-    pass
+
+    # we separate the neighbour coordinates into valid coordinates then we "convert" the coordinates into parcels and filter the parcels
+    # based on those that are hiding mines
+
+    return len(list((filter(eh_parcela_minada, map(lambda x: obtem_parcela(field,x) ,\
+        filter(lambda x: eh_coordenada_do_campo(field,x),obtem_coordenadas_vizinhas(coordinate)))))))
 
 def eh_campo(arg):
-    pass
+    '''
+    Returns True if the given argument is a campo ADT
+
+    arg -> universal
+    return -> bool
+    '''
+    return (type(arg) == list and all((type(x) == list and eh_parcela(y)) for x in arg for y in x) and \
+        ('A' <= obtem_ultima_coluna(arg) <= 'Z') and (1 <= obtem_ultima_linha(arg) <= 99))
 
 def eh_coordenada_do_campo(field, coordinate):
-    pass
+    '''
+    Returns True if the given coordinate is valid inside the field (its within the boundaries)
 
-def campos_iguais(f1,f2):
-    pass
+    field -> campo
+    coordinate -> coordenada
+    return -> bool
+    '''
+    return (1 <= obtem_linha(coordinate) <= obtem_ultima_linha(field)) and ('A' <= obtem_coluna(coordinate) <= obtem_ultima_coluna(field))
 
-def campo_para_str(field):
-    pass
+def campos_iguais(field1,field2):
+    '''
+    Returns True if both given fields are a campo ADT and are equal
+
+    f1,f2 -> campo
+    return -> bool
+    '''
+    return (eh_campo(field1) and eh_campo(field2) and field1 == field2)
+
+def campo_para_str(field): # FALTA FAZER COM QUE EM VEZ DE ? APAREÇAM O NUMERO DE MINAS NA PR
+    '''
+    Returns a string that represents the field
+
+    field -> campo
+    return -> str
+    '''
+
+    res = ""
+    letras = "".join(tuple(chr(x) for x in range(ord('A'),ord(obtem_ultima_coluna(field))+1)))
+    traços = "-"*len(letras)
+
+    res+= "   {letras}\n".format(letras = letras)
+    res+= "  +{espaços}+\n".format(espaços = traços)
+    for line in range(obtem_ultima_linha(field)):
+        parcelas = "".join(tuple(parcela_para_str(field[line][y]) for y in range(colParaIndex(obtem_ultima_coluna(field))+1)))
+        res+="{linha}|{parcelas}|\n".format(linha = coordenada_para_str(('A',line+1))[1:],parcelas = parcelas)
+        # in the above line we can reuse coordenada_para_str which already adds a 0 to less than 10 integers by slicing the column part
+
+    res +="  +{espaços}+".format(espaços = traços)
+
+    return res
+
+print(campo_para_str(cria_campo('E',5)))
+print('   ABCDE\n  +-----+\n01|#####|\n02|#####|\n03|#####|\n04|#####|\n05|#####|\n  +-----+')
 
 # Funções de alto nível para Campo
 
