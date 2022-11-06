@@ -344,6 +344,7 @@ def parcela_para_str(parcel):
         return "#"
 
 # Funções de alto nível para Parcela
+
 def alterna_bandeira(parcel):
     '''
     Modifies the given parcel state to "marcada" if it previously was "tapada" and vice-versa ("tapada" if "marcada")
@@ -365,26 +366,106 @@ def alterna_bandeira(parcel):
 #---------------------------------------------------
 
 # TAD Campo
+# Chosen representation: list[list[parcela]] -> list made out of lists containing parcela TAD
+# Each sublist represents a line and each index in a sublist represents its column 
 
 def cria_campo(last_col,last_lin):
-    pass
+    '''
+    Returns a field where the last column corresponds to last_col and the last line correspond to last_lin
+
+    last_col -> str
+    last_lin -> int
+    return -> list[list[parcela]] = campo 
+    '''
+    if(type(last_col) != str or type(last_lin) != int or not('A' <= last_col <= 'Z') or not(1 <= last_lin <= 99)):
+        raise ValueError("cria_campo: argumentos invalidos")
+    
+    return [[cria_parcela() for x in range(ord(last_col)-ord('A')+1)] for y in range(last_lin)]
+
 
 def cria_copia_campo(field):
-    pass
+    '''
+    Returns a copy of the given field
+
+    field -> campo
+    return -> campo
+    '''
+    return field.copy()
 
 def obtem_ultima_coluna(field):
-    pass
+    '''
+    Returns the letter corresponding to the last column of the given field
+
+    field -> campo
+    return -> str
+    '''
+    return chr(ord('A') + len(field[0])-1)
 
 def obtem_ultima_linha(field):
-    pass
+    '''
+    Returns the integer corresponding to the last line of the given field
+
+    field -> campo
+    return -> int
+    '''
+    return len(field)
 
 def obtem_parcela(field, coordinate):
-    pass
+    '''
+    Returns the parcel corresponding to the given coordinate location in the field
 
-def obtem_coordenadas(field):
-    pass
+    field -> campo
+    coordinate -> coordenada
+    return -> parcela
+    '''
+
+    #Subtracting 1 from obtem_linha is required since the first index of a list is 0 and the first line is 1
+    #In the case of the columns, this is not needed since ord('A') - ord('A') = 0 which corresponds to the first index
+    return field[obtem_linha(coordinate)-1][ord(obtem_coluna(coordinate))-ord('A')]
+
+def obtem_coordenadas(field,state): #Can be optimized - Será que dá para usar funcionais aqui
+    '''
+    Returns the tuple containing the coordinates of the field depending on the state of each corresponding parcel
+
+    field -> campo
+    state -> str
+    return -> tuple(coordenada)
+    '''
+
+    def colParaIndex(col):
+        return ord(col)-ord('A')
+    
+    def IndexParaCol(ind):
+        return chr(ind+ord('A'))
+
+    func = None
+    if(state == "limpas"):
+        func = eh_parcela_limpa
+    elif(state == "tapadas"):
+        func = eh_parcela_tapada
+    elif(state == "minadas"):
+        func = eh_parcela_minada
+    
+    max_lin = obtem_ultima_linha(field)
+    max_col = obtem_ultima_coluna(field)
+    res = ()
+    for line in range(max_lin):
+        res += tuple(cria_coordenada(IndexParaCol(y),line+1) for y in range(colParaIndex(max_col)+1) if func(field[line][y]))
+
+        # for column in range(colParaIndex(max_col)+1):
+        #   if(func(field[line][column])):
+        #       res += (cria_coordenada(IndexParaCol(column),line+1))
+
+    return res
 
 def obtem_numero_minas_vizinhas(field, coordinate):
+    '''
+    Returns the number of neighbour parcels of the parcel contained in the given coordinate that are hiding mines
+
+    field -> campo
+    coordinate -> coordenada
+    return -> int
+    '''
     pass
 
 def eh_campo(arg):
