@@ -509,6 +509,19 @@ def campo_para_str(field): # FALTA FAZER COM QUE EM VEZ DE ? APAREÇAM O NUMERO 
     return -> str
     '''
 
+    def escolhe_representacao(linha_pos,coluna_pos):
+        '''
+        "Chooses" the string representation of a given column and line index based on its state:
+            - If the parcel is clean, we return the number of neighbour mines otherwise an empty space
+            - Otherwise, we just return the corresponding symbol (just as )
+        '''
+        str_parcela = parcela_para_str(field[linha_pos][coluna_pos])
+        if(str_parcela == '?'):
+            minas_vizinhas = obtem_numero_minas_vizinhas(field, cria_coordenada(IndexParaCol(coluna_pos),linha_pos+1))
+            return str(minas_vizinhas) if minas_vizinhas != 0 else ' '
+        else:
+            return str_parcela
+
     res = ""
     letras = "".join(tuple(chr(x) for x in range(ord('A'),ord(obtem_ultima_coluna(field))+1)))
     traços = "-"*len(letras)
@@ -516,16 +529,13 @@ def campo_para_str(field): # FALTA FAZER COM QUE EM VEZ DE ? APAREÇAM O NUMERO 
     res+= "   {letras}\n".format(letras = letras)
     res+= "  +{espaços}+\n".format(espaços = traços)
     for line in range(obtem_ultima_linha(field)):
-        parcelas = "".join(tuple(parcela_para_str(field[line][y]) for y in range(colParaIndex(obtem_ultima_coluna(field))+1)))
+        parcelas = "".join(tuple(escolhe_representacao(line,column) for column in range(colParaIndex(obtem_ultima_coluna(field))+1)))
         res+="{linha}|{parcelas}|\n".format(linha = coordenada_para_str(('A',line+1))[1:],parcelas = parcelas)
         # in the above line we can reuse coordenada_para_str which already adds a 0 to less than 10 integers by slicing the column part
 
     res +="  +{espaços}+".format(espaços = traços)
 
     return res
-
-print(campo_para_str(cria_campo('E',5)))
-print('   ABCDE\n  +-----+\n01|#####|\n02|#####|\n03|#####|\n04|#####|\n05|#####|\n  +-----+')
 
 # Funções de alto nível para Campo
 
