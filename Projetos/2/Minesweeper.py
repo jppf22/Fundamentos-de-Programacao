@@ -380,7 +380,7 @@ def cria_campo(last_col,last_lin):
     if(type(last_col) != str or type(last_lin) != int or not('A' <= last_col <= 'Z') or not(1 <= last_lin <= 99)):
         raise ValueError("cria_campo: argumentos invalidos")
     
-    return [[cria_parcela() for x in range(ord(last_col)-ord('A')+1)] for y in range(last_lin)]
+    return [[cria_parcela() for x in range(colParaIndex(last_col)+1)] for y in range(last_lin)]
 
 
 def cria_copia_campo(field):
