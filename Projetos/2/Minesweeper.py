@@ -683,6 +683,7 @@ def minas(last_col,last_lin,n_mines,generator_dimension,seed):
     print("VITORIA!!!")
     return True
     
+#print(minas('Z',20,50,32,1))
 
 
 
