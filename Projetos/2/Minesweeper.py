@@ -603,6 +603,16 @@ def jogo_ganho(field):
     #se não houverem parcelas "marcadas" nem parcelas "tapadas" não minadas então o jogo terminou
     return not(len(obtem_coordenadas(field,"marcadas")) + (len(obtem_coordenadas(field,"tapadas"))-len(obtem_coordenadas(field,"minadas"))))
  
+
+def escolher_coordenada(field):
+    coordinate = input("Escolha uma coordenada:")
+    while not(len(coordinate) == 3 and coordinate[1].isdigit() and coordinate[2].isdigit() \
+         and eh_coordenada_do_campo(field,str_para_coordenada(coordinate))):
+        coordinate = input("Escolha uma coordenada:")
+
+    coordinate = str_para_coordenada(coordinate)
+    return coordinate
+
 def turno_jogador(field):
     '''
     Lets the player pick an action and a coordinate, returning False if the player chooses to clean a mine.
@@ -615,12 +625,7 @@ def turno_jogador(field):
     while action not in ('L','M'):
         action = input("Escolha uma ação, [L]impar ou [M]arcar:")
     
-    coordinate = input("Escolha uma coordenada:")
-    while not(len(coordinate) == 3 and coordinate[1].isdigit() and coordinate[2].isdigit() \
-         and eh_coordenada_do_campo(field,str_para_coordenada(coordinate))):
-        coordinate = input("Escolha uma coordenada:")
-
-    coordinate = str_para_coordenada(coordinate)
+    coordinate = escolher_coordenada(field)
     
     if(action == 'L'):
         chosen_parcel = obtem_parcela(field,coordinate)
@@ -646,11 +651,38 @@ def minas(last_col,last_lin,n_mines,generator_dimension,seed):
     generator_dimension -> int
     seed -> int
     '''
-    
+
+    def mostraCampo():
+        flags = len(obtem_coordenadas(field,"marcadas"))
+        print("   [Bandeiras {flags}/{minas}]".format(flags = flags,minas=n_mines))
+        print(campo_para_str(field))
+
     # Argument checking
-    
+    if(type(last_col) != str or not('A' <= last_col <= 'Z') or type(last_lin) != int or not(1 <= last_lin <= 99) or type(n_mines) != int or n_mines < 0 \
+        or type(generator_dimension) != int or generator_dimension not in (32,64) or type(seed) != int or seed <= 0):
+        raise ValueError("minas: argumentos invalidos")
 
     # Playing game
+    field = cria_campo(last_col,last_lin)
+    generator = cria_gerador(generator_dimension,seed)
+    mostraCampo()
+
+    initial_coordinate = escolher_coordenada(field)
+    coloca_minas(field,initial_coordinate,generator,n_mines)
+    limpa_campo(field,initial_coordinate)
+    mostraCampo()
+
+    while not jogo_ganho(field):
+        isMineClean = not turno_jogador(field)
+        mostraCampo()
+
+        if(isMineClean):
+            print("BOOOOOOOM!!!")
+            return False
     
+    print("VITORIA!!!")
+    return True
+    
+
 
 
