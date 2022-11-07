@@ -442,6 +442,8 @@ def obtem_coordenadas(field,state): #Can be optimized - Será que dá para usar 
         func = eh_parcela_limpa
     elif(state == "tapadas"):
         func = eh_parcela_tapada
+    elif(state == "marcadas"):
+        func = eh_parcela_marcada
     elif(state == "minadas"):
         func = eh_parcela_minada
     
@@ -490,7 +492,7 @@ def eh_coordenada_do_campo(field, coordinate):
     coordinate -> coordenada
     return -> bool
     '''
-    return (1 <= obtem_linha(coordinate) <= obtem_ultima_linha(field)) and ('A' <= obtem_coluna(coordinate) <= obtem_ultima_coluna(field))
+    return eh_coordenada(coordinate) and (1 <= obtem_linha(coordinate) <= obtem_ultima_linha(field)) and ('A' <= obtem_coluna(coordinate) <= obtem_ultima_coluna(field))
 
 def campos_iguais(field1,field2):
     '''
@@ -540,25 +542,115 @@ def campo_para_str(field): # FALTA FAZER COM QUE EM VEZ DE ? APAREÇAM O NUMERO 
 # Funções de alto nível para Campo
 
 def coloca_minas(field, coordinate,generator, n_mines):
-    pass
+    '''
+    Hides n_mines in parcels inside the given field, using a generator sequentially, while making sure each mine
+    doesn't land on a position equal or neighbouring the given coordinate position and doesn't occupy the same place
+    as a previously placed mine. 
+
+    field -> campo
+    coordinate -> coordenada
+    generator -> gerador
+    n_mines -> int
+    return -> campo
+    '''
+    coordinate_max = cria_coordenada(obtem_ultima_coluna(field),obtem_ultima_linha(field))
+    hidden_mines = 0
+    while hidden_mines < n_mines:
+        possible_coordinate = obtem_coordenada_aleatoria(coordinate_max,generator)
+        if(coordenadas_iguais(possible_coordinate,coordinate) or \
+            any(coordenadas_iguais(possible_coordinate,neighbour) for neighbour in obtem_coordenadas_vizinhas(coordinate)) or \
+                eh_parcela_minada(obtem_parcela(field,possible_coordinate))):
+                continue
+        else:
+            esconde_mina(obtem_parcela(field,possible_coordinate))
+            hidden_mines += 1
+
+    return field        
 
 def limpa_campo(field, coordinate):
-    pass
+    '''
+    Changes the state of the parcel in the given coordinate to "limpa" and, if there aren't any
+    neighbour mines, changes the state of every neighbour parcel iteratively.
+    If the parcel already has state "limpa" this function has no effect.
 
+    field -> campo
+    coordinate -> coordenada
+    return -> campo
+    '''
+    corresponding_parcel = obtem_parcela(field,coordinate)
+
+    if(not eh_parcela_limpa(corresponding_parcel)):
+        limpa_parcela(corresponding_parcel)
+
+        if(obtem_numero_minas_vizinhas(field,coordinate) == 0):
+            for neighbour in obtem_coordenadas_vizinhas(coordinate):
+                if(eh_coordenada_do_campo(field,neighbour) and eh_parcela_tapada(obtem_parcela(field,neighbour))):
+                    limpa_campo(field,neighbour)
+
+    return field
+    
 # ---------------------------------------------------------
 
 # Minesweeper game logic
 
 def jogo_ganho(field):
-    pass
+    '''
+    Returns true if all parcels without mines have state "limpa"
 
+    field -> campo
+    return -> bool
+    '''
+    #se não houverem parcelas "marcadas" nem parcelas "tapadas" não minadas então o jogo terminou
+    return not(len(obtem_coordenadas(field,"marcadas")) + (len(obtem_coordenadas(field,"tapadas"))-len(obtem_coordenadas(field,"minadas"))))
+ 
 def turno_jogador(field):
-    pass
+    '''
+    Lets the player pick an action and a coordinate, returning False if the player chooses to clean a mine.
+
+    field -> campo
+    return -> bool
+    '''
+
+    action = input("Escolha uma ação, [L]impar ou [M]arcar:")
+    while action not in ('L','M'):
+        action = input("Escolha uma ação, [L]impar ou [M]arcar:")
+    
+    coordinate = input("Escolha uma coordenada:")
+    while not(len(coordinate) == 3 and coordinate[1].isdigit() and coordinate[2].isdigit() \
+         and eh_coordenada_do_campo(field,str_para_coordenada(coordinate))):
+        coordinate = input("Escolha uma coordenada:")
+
+    coordinate = str_para_coordenada(coordinate)
+    
+    if(action == 'L'):
+        chosen_parcel = obtem_parcela(field,coordinate)
+        if(eh_parcela_minada(chosen_parcel)):
+            limpa_parcela(chosen_parcel)
+            return False
+        else:
+            limpa_campo(field,coordinate)
+    elif(action == 'M'):
+        marca_parcela(obtem_parcela(field,coordinate))
+
+    return True
 
 # Main function
 
 def minas(last_col,last_lin,n_mines,generator_dimension,seed):
-    pass
+    '''
+    Returns True if player is able to win minesweeper game
 
+    last_col -> str
+    last_lin -> int
+    n_mines -> int
+    generator_dimension -> int
+    seed -> int
+    '''
+    
+    # Argument checking
+    
+
+    # Playing game
+    
 
 
