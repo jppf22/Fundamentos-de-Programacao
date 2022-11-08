@@ -377,3 +377,80 @@ class TestPublicCampo:
         esconde_mina(obtem_parcela(c2,cria_coordenada('D',5)))
         assert((c1 == c2) == False)
     
+class TestMOOSHAK:
+
+    def test_MOOSHAK_41(self):
+        with pytest.raises(ValueError, match="cria_gerador: argumentos invalidos"):
+            assert(cria_gerador(32,1267650600228229401496703205376))
+
+    def test_MOOSHAK_52(self):
+        assert(eh_gerador([32.0,1]) == False)
+
+    def test_MOOSHAK_54(self):
+        assert(eh_gerador([32,1267650600228229401496703205376]) == False)
+
+    def test_MOOSHAK_55(self):
+        assert(eh_gerador({}) == False)
+
+    def test_MOOSHAK_72(self):
+        with pytest.raises(ValueError, match="cria_coordenada: argumentos invalidos"):
+            assert(cria_coordenada('MA',10))
+
+    def test_MOOSHAK_86(self):
+        assert(eh_coordenada(('B0',15)) == False)
+
+    def test_MOOSHAK_125(self):
+        assert(eh_parcela([]) == False)
+
+    def test_MOOSHAK_165(self):
+        with pytest.raises(ValueError, match="cria_campo: argumentos invalidos"):
+            assert(cria_campo('LB',25))
+
+    def test_MOOSHAK_173(self):
+        m1 = cria_campo('M',80)
+        m1_c = cria_copia_campo(m1)
+        a1 = cria_coordenada('A',1)
+        p1 = obtem_parcela(m1_c,a1)
+        p2 = obtem_parcela(m1,a1)
+        assert(parcelas_iguais(p1,p2) == False)
+
+    def test_MOOSHAK_191(self):
+        assert(eh_campo([]) == False)
+
+    ''' Acho que está bem mas há alguma xatiçe com formatação
+    def test_MOOSHAK_212(self):
+        c = cria_campo('J',8)
+        coloca_minas(c,cria_coordenada('J',8),cria_gerador(32,32),10)
+        limpa_campo(c,cria_coordenada('J',8))
+        limpa_campo(c,cria_coordenada('B',3))
+        limpa_campo(c,cria_coordenada('H',7))
+        str_c = campo_para_str(c)
+        assert((str_c == "   ABCDEFGHIJ\n  +----------+\n01|##########|\n02|##########|\n03|#X#1111111|\n04|###1      |\n05|###1      |\n06|###222211 |\n07|#######X1 |\n08|########1 |\n  +----------+\n") == True)
+    '''
+    '''
+    def test_MOOSHAK_227(self):
+        pass
+
+    '''
+    '''
+    def test_MOOSHAK_229(self):
+        pass
+    '''
+
+    def test_MOOSHAK_232(self):
+        with pytest.raises(ValueError,match="minas: argumentos invalidos"):
+            minas('FA',10,6,32,100)
+
+    def test_MOOSHAK_238(self): #mais minas que coordenadas
+        with pytest.raises(ValueError,match="minas: argumentos invalidos"):
+            minas('E',5,100,32,100)
+
+    def test_MOOSHAK_239(self): #1 mina para 4 parcelas
+        with pytest.raises(ValueError,match="minas: argumentos invalidos"):
+            minas('B',2,1,32,100)
+
+    def test_MOOSHAK_243(self): # 0 minas
+        with pytest.raises(ValueError,match="minas: argumentos invalidos"):
+            minas('J',35,0,64,50)
+
+    
