@@ -30,7 +30,7 @@ def atualiza_estado(generator):
     return generator[1]
 
 def eh_gerador(arg):
-    return (type(arg) == list and arg[0] in (32,64) and type(arg[1]) == int and 0 < arg[1])
+    return (type(arg) == list and len(arg) == 2 and type(arg[0]) == int and arg[0] in (32,64) and type(arg[1]) == int and 0 < arg[1])
 
 def geradores_iguais(gene1,gene2):
     return (eh_gerador(gene1) and eh_gerador(gene2) and gene1[0] == gene2[0] and gene1[1] == gene2[1])
@@ -82,7 +82,7 @@ def cria_coordenada(col,lin):
     lin -> int
     return -> tuple(str,int)
     '''
-    if(type(col) != str or type(lin) != int or not('A' <= col <= 'Z') or not(1 <= lin <= 99)):
+    if(type(col) != str or len(col) != 1 or type(lin) != int or not('A' <= col <= 'Z') or not(1 <= lin <= 99)):
         raise ValueError("cria_coordenada: argumentos invalidos")
 
     return (col,lin)
@@ -113,7 +113,7 @@ def eh_coordenada(arg):
     arg -> universal
     return -> bool
     '''
-    return (type(arg) == tuple and len(arg) == 2 and type(arg[0]) == str and type(arg[1]) == int and ('A' <= arg[0] <= 'Z') and (1 <= arg[1] <= 99))
+    return (type(arg) == tuple and len(arg) == 2 and type(arg[0]) == str and len(arg[0]) == 1 and type(arg[1]) == int and ('A' <= arg[0] <= 'Z') and (1 <= arg[1] <= 99))
 
 def coordenadas_iguais(c1,c2):
     '''
@@ -269,7 +269,7 @@ def eh_parcela(arg):
     arg -> universal
     return -> bool
     '''
-    return (type(arg) == list and type(arg[0]) == str and type(arg[1]) == bool \
+    return (type(arg) == list and len(arg) == 2 and type(arg[0]) == str and type(arg[1]) == bool \
         and (arg[0] in ("tapada","limpa","marcada")))
 
 def eh_parcela_tapada(parcel):
@@ -309,7 +309,7 @@ def eh_parcela_minada(parcel):
     '''
     return parcel[1]
 
-def parcelas_iguais(p1,p2):
+def parcelas_iguais(p1,p2): #I think we need to do p1 == p2
     '''
     Returns True if both parcels are equal
 
@@ -377,7 +377,7 @@ def cria_campo(last_col,last_lin):
     last_lin -> int
     return -> list[list[parcela]] = campo 
     '''
-    if(type(last_col) != str or type(last_lin) != int or not('A' <= last_col <= 'Z') or not(1 <= last_lin <= 99)):
+    if(type(last_col) != str or len(last_col) != 1 or type(last_lin) != int or not('A' <= last_col <= 'Z') or not(1 <= last_lin <= 99)):
         raise ValueError("cria_campo: argumentos invalidos")
     
     return [[cria_parcela() for x in range(colParaIndex(last_col)+1)] for y in range(last_lin)]
@@ -481,7 +481,7 @@ def eh_campo(arg):
     arg -> universal
     return -> bool
     '''
-    return (type(arg) == list and all((type(x) == list and eh_parcela(y)) for x in arg for y in x) and \
+    return (type(arg) == list and len(arg) != 0 and all((type(x) == list and len(x) != 0 and eh_parcela(y)) for x in arg for y in x) and \
         ('A' <= obtem_ultima_coluna(arg) <= 'Z') and (1 <= obtem_ultima_linha(arg) <= 99))
 
 def eh_coordenada_do_campo(field, coordinate):
@@ -582,7 +582,7 @@ def limpa_campo(field, coordinate):
     if(not eh_parcela_limpa(corresponding_parcel)):
         limpa_parcela(corresponding_parcel)
 
-        if(obtem_numero_minas_vizinhas(field,coordinate) == 0):
+        if(obtem_numero_minas_vizinhas(field,coordinate) == 0 and not eh_parcela_minada(corresponding_parcel)):
             for neighbour in obtem_coordenadas_vizinhas(coordinate):
                 if(eh_coordenada_do_campo(field,neighbour) and eh_parcela_tapada(obtem_parcela(field,neighbour))):
                     limpa_campo(field,neighbour)
@@ -658,7 +658,7 @@ def minas(last_col,last_lin,n_mines,generator_dimension,seed):
         print(campo_para_str(field))
 
     # Argument checking
-    if(type(last_col) != str or not('A' <= last_col <= 'Z') or type(last_lin) != int or not(1 <= last_lin <= 99) or type(n_mines) != int or n_mines < 0 \
+    if(type(last_col) != str or len(last_col) != 1 or not('A' <= last_col <= 'Z') or type(last_lin) != int or not(1 <= last_lin <= 99) or type(n_mines) != int or n_mines <= 0 \
         or type(generator_dimension) != int or generator_dimension not in (32,64) or type(seed) != int or seed <= 0):
         raise ValueError("minas: argumentos invalidos")
 
@@ -683,7 +683,4 @@ def minas(last_col,last_lin,n_mines,generator_dimension,seed):
     print("VITORIA!!!")
     return True
     
-#print(minas('Z',20,50,32,1))
-
-
-
+#print(minas('Z',20,3,32,1))
