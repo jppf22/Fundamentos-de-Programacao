@@ -473,7 +473,6 @@ def obtem_numero_minas_vizinhas(field, coordinate): # Could do in another way
 
     # we separate the neighbour coordinates into valid coordinates then we "convert" the coordinates into parcels and filter the parcels
     # based on those that are hiding mines
-
     return len(list((filter(eh_parcela_minada, map(lambda x: obtem_parcela(field,x) ,\
         filter(lambda x: eh_coordenada_do_campo(field,x),obtem_coordenadas_vizinhas(coordinate)))))))
 
@@ -629,16 +628,16 @@ def turno_jogador(field):
         action = input("Escolha uma ação, [L]impar ou [M]arcar:")
     
     coordinate = choose_coordinate(field)
-    
+
+    chosen_parcel = obtem_parcela(field,coordinate)
     if(action == 'L'):
-        chosen_parcel = obtem_parcela(field,coordinate)
         if(eh_parcela_minada(chosen_parcel)):
             limpa_parcela(chosen_parcel)
             return False
         else:
             limpa_campo(field,coordinate)
     elif(action == 'M'):
-        marca_parcela(obtem_parcela(field,coordinate))
+        alterna_bandeira(chosen_parcel)
 
     return True
 
@@ -698,4 +697,4 @@ def minas(last_col,last_lin,n_mines,generator_dimension,seed):
     print("VITORIA!!!")
     return True
     
-#print(minas('Z',20,3,32,1))
+#print(minas('Z',20,30,32,1))
