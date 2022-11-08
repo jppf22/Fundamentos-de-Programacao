@@ -3,9 +3,16 @@
 # TAD Gerador
 # Chosen representation - type: list -> [int,int] = [bits,seed]
 
+def is_valid_state(bits,seed):
+    if(bits == 32):
+        return (seed <= 0xFFFFFFFF)
+    elif(bits == 64):
+        return (seed <= 0xFFFFFFFFFFFFFFFF)
+
 def cria_gerador(bits,seed):
-    if(type(bits) != int or bits not in (32,64) or type(seed) != int or seed <= 0):
+    if(type(bits) != int or bits not in (32,64) or type(seed) != int or seed <= 0 or not(is_valid_state(bits,seed))):
         raise ValueError("cria_gerador: argumentos invalidos")
+
     return [bits,seed]
 
 def cria_copia_gerador(generator):
@@ -30,7 +37,7 @@ def atualiza_estado(generator):
     return generator[1]
 
 def eh_gerador(arg):
-    return (type(arg) == list and len(arg) == 2 and type(arg[0]) == int and arg[0] in (32,64) and type(arg[1]) == int and 0 < arg[1])
+    return (type(arg) == list and len(arg) == 2 and type(arg[0]) == int and arg[0] in (32,64) and type(arg[1]) == int and 0 < arg[1] and is_valid_state(arg[0],arg[1]))
 
 def geradores_iguais(gene1,gene2):
     return (eh_gerador(gene1) and eh_gerador(gene2) and gene1[0] == gene2[0] and gene1[1] == gene2[1])
@@ -115,14 +122,14 @@ def eh_coordenada(arg):
     '''
     return (type(arg) == tuple and len(arg) == 2 and type(arg[0]) == str and len(arg[0]) == 1 and type(arg[1]) == int and ('A' <= arg[0] <= 'Z') and (1 <= arg[1] <= 99))
 
-def coordenadas_iguais(c1,c2):
+def coordenadas_iguais(c1,c2): 
     '''
     Returns True if both coordinates are equal
 
     c1,c2 -> tuple(str,int)
     return -> bool
     '''
-    return (eh_coordenada(c1) and eh_coordenada(c2) and c1[0] == c2[0] and c1[1] == c2[1])
+    return (eh_coordenada(c1) and eh_coordenada(c2) and c1 == c2)
 
 def coordenada_para_str(coordinate):
     '''
@@ -317,7 +324,7 @@ def parcelas_iguais(p1,p2): #I think we need to do p1 == p2
     p2 -> list[str,bool]
     return -> bool
     '''
-    return (eh_parcela(p1) and eh_parcela(p2) and p1[0] == p2[0] and p1[1] == p2[1])
+    return (eh_parcela(p1) and eh_parcela(p2) and p1 == p2)
 
 def parcela_para_str(parcel):
     '''
@@ -452,12 +459,8 @@ def obtem_coordenadas(field,state): #Can be optimized - Será que dá para usar 
     res = ()
     for line in range(max_lin):
         res += tuple(cria_coordenada(IndexParaCol(y),line+1) for y in range(colParaIndex(max_col)+1) if func(field[line][y]))
-
-        # for column in range(colParaIndex(max_col)+1):
-        #   if(func(field[line][column])):
-        #       res += (cria_coordenada(IndexParaCol(column),line+1))
-
     return res
+
 
 def obtem_numero_minas_vizinhas(field, coordinate): # Could do in another way
     '''
@@ -503,7 +506,7 @@ def campos_iguais(field1,field2):
     '''
     return (eh_campo(field1) and eh_campo(field2) and field1 == field2)
 
-def campo_para_str(field): # FALTA FAZER COM QUE EM VEZ DE ? APAREÇAM O NUMERO DE MINAS NA PR
+def campo_para_str(field): 
     '''
     Returns a string that represents the field
 
@@ -511,11 +514,11 @@ def campo_para_str(field): # FALTA FAZER COM QUE EM VEZ DE ? APAREÇAM O NUMERO 
     return -> str
     '''
 
-    def escolhe_representacao(linha_pos,coluna_pos):
+    def choose_str_representation(linha_pos,coluna_pos):
         '''
         "Chooses" the string representation of a given column and line index based on its state:
             - If the parcel is clean, we return the number of neighbour mines otherwise an empty space
-            - Otherwise, we just return the corresponding symbol (just as )
+            - If the parcel isn't clean, we just return the corresponding symbol
         '''
         str_parcela = parcela_para_str(field[linha_pos][coluna_pos])
         if(str_parcela == '?'):
@@ -531,8 +534,8 @@ def campo_para_str(field): # FALTA FAZER COM QUE EM VEZ DE ? APAREÇAM O NUMERO 
     res+= "   {letras}\n".format(letras = letras)
     res+= "  +{espaços}+\n".format(espaços = traços)
     for line in range(obtem_ultima_linha(field)):
-        parcelas = "".join(tuple(escolhe_representacao(line,column) for column in range(colParaIndex(obtem_ultima_coluna(field))+1)))
-        res+="{linha}|{parcelas}|\n".format(linha = coordenada_para_str(('A',line+1))[1:],parcelas = parcelas)
+        parcelas = "".join(tuple(choose_str_representation(line,column) for column in range(colParaIndex(obtem_ultima_coluna(field))+1)))
+        res+="{linha}|{parcelas}|\n".format(linha = coordenada_para_str(cria_coordenada('A',line+1))[1:],parcelas = parcelas)
         # in the above line we can reuse coordenada_para_str which already adds a 0 to less than 10 integers by slicing the column part
 
     res +="  +{espaços}+".format(espaços = traços)
@@ -600,11 +603,11 @@ def jogo_ganho(field):
     field -> campo
     return -> bool
     '''
-    #se não houverem parcelas "marcadas" nem parcelas "tapadas" não minadas então o jogo terminou
+    #se não houverem parcelas "marcadas" nem parcelas "tapadas" NÃO MINADAS então o jogo terminou
     return not(len(obtem_coordenadas(field,"marcadas")) + (len(obtem_coordenadas(field,"tapadas"))-len(obtem_coordenadas(field,"minadas"))))
  
 
-def escolher_coordenada(field):
+def choose_coordinate(field):
     coordinate = input("Escolha uma coordenada:")
     while not(len(coordinate) == 3 and coordinate[1].isdigit() and coordinate[2].isdigit() \
          and eh_coordenada_do_campo(field,str_para_coordenada(coordinate))):
@@ -625,7 +628,7 @@ def turno_jogador(field):
     while action not in ('L','M'):
         action = input("Escolha uma ação, [L]impar ou [M]arcar:")
     
-    coordinate = escolher_coordenada(field)
+    coordinate = choose_coordinate(field)
     
     if(action == 'L'):
         chosen_parcel = obtem_parcela(field,coordinate)
@@ -652,29 +655,41 @@ def minas(last_col,last_lin,n_mines,generator_dimension,seed):
     seed -> int
     '''
 
-    def mostraCampo():
+    def showField():
         flags = len(obtem_coordenadas(field,"marcadas"))
         print("   [Bandeiras {flags}/{minas}]".format(flags = flags,minas=n_mines))
         print(campo_para_str(field))
+    
+    def isGuaranteedValidField():
+        '''
+        Having space left for mines after choosing a coordinate to clean is only GUARANTEED if:
+        - The field is 3x4 or 4x3
 
-    # Argument checking
-    if(type(last_col) != str or len(last_col) != 1 or not('A' <= last_col <= 'Z') or type(last_lin) != int or not(1 <= last_lin <= 99) or type(n_mines) != int or n_mines <= 0 \
+        The number of total parcels (number of cols * number of lines) minus the number of mines must never be inferior to 9 otherwise 
+        it isn't guaranteed the first coordinate and its neighbours don't have mines.
+        '''
+        return (('C' <= last_col <= 'Z' and 4 <= last_lin <= 99) or ('D' <= last_col <= 'Z' and 3 <= last_lin <= 99)) and ((colParaIndex(last_col)+1)*last_lin - n_mines >= 9) 
+
+    # Argument checking 
+    if(type(last_col) != str or len(last_col) != 1 or type(last_lin) != int or type(n_mines) != int or n_mines <= 0 or not(isGuaranteedValidField())\
         or type(generator_dimension) != int or generator_dimension not in (32,64) or type(seed) != int or seed <= 0):
         raise ValueError("minas: argumentos invalidos")
 
     # Playing game
     field = cria_campo(last_col,last_lin)
     generator = cria_gerador(generator_dimension,seed)
-    mostraCampo()
+    showField()
 
-    initial_coordinate = escolher_coordenada(field)
+    initial_coordinate = choose_coordinate(field)
+
+
     coloca_minas(field,initial_coordinate,generator,n_mines)
     limpa_campo(field,initial_coordinate)
-    mostraCampo()
+    showField()
 
     while not jogo_ganho(field):
         isMineClean = not turno_jogador(field)
-        mostraCampo()
+        showField()
 
         if(isMineClean):
             print("BOOOOOOOM!!!")
