@@ -412,7 +412,7 @@ class TestMOOSHAK:
         a1 = cria_coordenada('A',1)
         p1 = obtem_parcela(m1_c,a1)
         p2 = obtem_parcela(m1,a1)
-        assert(parcelas_iguais(p1,p2) == False)
+        assert(parcelas_iguais(p1,p2) == True)
 
     def test_MOOSHAK_191(self):
         assert(eh_campo([]) == False)
