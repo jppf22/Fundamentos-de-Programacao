@@ -330,6 +330,19 @@ class TestPublicCampo:
             esconde_mina(obtem_parcela(c,i))
         assert((obtem_numero_minas_vizinhas(c,coordinate_test) == 8) == True)
     
+    def test_cria_copia_campo1(self):
+        c1 = cria_campo('E',5)
+        c = cria_copia_campo(c1)
+        assert(campos_iguais(c1,c) == True)
+    
+    def test_cria_copia_campo2(self):
+        c1 = cria_campo('E',5)
+        c = cria_copia_campo(c1)
+        a1 = cria_coordenada('A',1)
+        p1 = obtem_parcela(c1,a1)
+        p2 = obtem_parcela(c,a1)
+        assert((parcelas_iguais(p1,p2)) == True)
+
     def test_eh_campo_vdd_1elemento(self):
         assert((eh_campo([[["tapada",False]]])) == True)
     
