@@ -419,14 +419,6 @@ class TestMOOSHAK:
         with pytest.raises(ValueError, match="cria_campo: argumentos invalidos"):
             assert(cria_campo('LB',25))
 
-    def test_MOOSHAK_173(self):
-        m1 = cria_campo('M',80)
-        m1_c = cria_copia_campo(m1)
-        a1 = cria_coordenada('A',1)
-        p1 = obtem_parcela(m1_c,a1)
-        p2 = obtem_parcela(m1,a1)
-        assert(parcelas_iguais(p1,p2) == True)
-
     def test_MOOSHAK_191(self):
         assert(eh_campo([]) == False)
 
@@ -465,5 +457,18 @@ class TestMOOSHAK:
     def test_MOOSHAK_243(self): # 0 minas
         with pytest.raises(ValueError,match="minas: argumentos invalidos"):
             minas('J',35,0,64,50)
+
+    # Tests que lidam com a copia
+    def test_MOOSHAK_172(self):
+        c = cria_campo('M',80)
+        c_copy = cria_copia_campo(c)
+        assert(campos_iguais(c,c_copy) == True)
+    
+    def test_MOOSHAK_173(self):
+        c = cria_campo('M',80)
+        c_copy = cria_copia_campo(c)
+        for line in range(obtem_ultima_linha(c)):
+            for column in range(colParaIndex(obtem_ultima_coluna(c))):
+                assert((parcelas_iguais(obtem_parcela(c,cria_coordenada(IndexParaCol(column),line+1)),obtem_parcela(c_copy,cria_coordenada(IndexParaCol(column),line+1)))) == True)
 
     

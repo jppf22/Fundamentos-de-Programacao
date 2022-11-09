@@ -10,22 +10,55 @@ def is_valid_state(bits,seed):
         return (seed <= 0xFFFFFFFFFFFFFFFF)
 
 def cria_gerador(bits,seed):
+    '''
+    Returns a xorshift generator with dimension equal to parameter bits
+
+    bits -> int
+    seed -> int
+    return -> gerador
+    '''
     if(type(bits) != int or bits not in (32,64) or type(seed) != int or seed <= 0 or not(is_valid_state(bits,seed))):
         raise ValueError("cria_gerador: argumentos invalidos")
 
     return [bits,seed]
 
 def cria_copia_gerador(generator):
+    '''
+    Returns a copy of the given generator
+
+    generator -> gerador
+    return -> gerador
+    '''
     return generator.copy()
 
 def obtem_estado(generator):
+    '''
+    Returns the state of the seed of the given generator
+
+    generator -> gerador
+    return -> int
+    '''
     return generator[1]
 
 def define_estado(generator,state):
+    '''
+    Assigns and returns a state to the seed of the given generator
+    
+    generator -> gerador
+    state -> int
+    return -> int
+    '''
     generator[1] = state
     return state
 
 def atualiza_estado(generator):
+    '''
+    Updates the state of the seed with the xorshift algorithm to generator random numbers
+
+    generator -> gerador
+    return -> gerador
+    '''
+
     if generator[0] == 32:
         generator[1] ^= (generator[1] << 13) & 0xFFFFFFFF
         generator[1] ^= (generator[1] >> 17) & 0xFFFFFFFF
@@ -37,12 +70,30 @@ def atualiza_estado(generator):
     return generator[1]
 
 def eh_gerador(arg):
+    '''
+    Returns true if the given argument correctly represents the ADT gerador
+
+    arg -> universal
+    return -> bool
+    '''
     return (type(arg) == list and len(arg) == 2 and type(arg[0]) == int and arg[0] in (32,64) and type(arg[1]) == int and 0 < arg[1] and is_valid_state(arg[0],arg[1]))
 
 def geradores_iguais(gene1,gene2):
+    '''
+    Returns true if both given generators are equal
+
+    gene1,gene2 -> gerador
+    return -> bool
+    '''
     return (eh_gerador(gene1) and eh_gerador(gene2) and gene1[0] == gene2[0] and gene1[1] == gene2[1])
 
 def gerador_para_str(generator):
+    '''
+    Returns the str representation of the given generator. Format: "xorshift{bits}(s = {state})" where bits is the dimension and state the current state of the seed
+    
+    generator -> gerador
+    return -> str
+    '''
     return "xorshift" + str(generator[0]) + "(s=" + str(generator[1]) + ")"
 
 # Funções alto-nível para Gerador 
@@ -316,7 +367,7 @@ def eh_parcela_minada(parcel):
     '''
     return parcel[1]
 
-def parcelas_iguais(p1,p2): #I think we need to do p1 == p2
+def parcelas_iguais(p1,p2): 
     '''
     Returns True if both parcels are equal
 
@@ -397,7 +448,16 @@ def cria_copia_campo(field):
     field -> campo
     return -> campo
     '''
-    return field.copy()
+    #return field.copy()
+    copia = cria_campo(obtem_ultima_coluna(field),obtem_ultima_linha(field))
+    for line in range(obtem_ultima_linha(field)):
+        for column in range(colParaIndex(obtem_ultima_coluna(field))):
+            coordenada_atual = cria_coordenada(IndexParaCol(column),line+1)
+            p_copia = obtem_parcela(copia,coordenada_atual)
+            p_campo = obtem_parcela(field,coordenada_atual)
+            if not parcelas_iguais(p_copia,p_campo):
+                p_copia = p_campo
+    return copia
 
 def obtem_ultima_coluna(field):
     '''
@@ -436,7 +496,7 @@ def colParaIndex(col):
 def IndexParaCol(ind):
         return chr(ind+ord('A'))
 
-def obtem_coordenadas(field,state): #Can be optimized - Será que dá para usar funcionais aqui
+def obtem_coordenadas(field,state): 
     '''
     Returns the tuple containing the coordinates of the field depending on the state of each corresponding parcel
 
@@ -503,7 +563,19 @@ def campos_iguais(field1,field2):
     f1,f2 -> campo
     return -> bool
     '''
-    return (eh_campo(field1) and eh_campo(field2) and field1 == field2)
+
+    if(not(eh_campo(field1) and eh_campo(field2)) or \
+        obtem_ultima_linha(field1) != obtem_ultima_linha(field2) or obtem_ultima_coluna(field1) != obtem_ultima_coluna(field2)):
+        return False
+
+    for line in range(obtem_ultima_linha(field1)):
+        for column in range(colParaIndex(obtem_ultima_coluna(field1))):
+            coordenada_atual = cria_coordenada(IndexParaCol(column),line+1)
+            if not parcelas_iguais(obtem_parcela(field1,coordenada_atual),obtem_parcela(field2,coordenada_atual)):
+                return False
+    
+    return True
+
 
 def campo_para_str(field): 
     '''
@@ -680,8 +752,6 @@ def minas(last_col,last_lin,n_mines,generator_dimension,seed):
     showField()
 
     initial_coordinate = choose_coordinate(field)
-
-
     coloca_minas(field,initial_coordinate,generator,n_mines)
     limpa_campo(field,initial_coordinate)
     showField()
@@ -698,3 +768,4 @@ def minas(last_col,last_lin,n_mines,generator_dimension,seed):
     return True
     
 #print(minas('Z',20,30,32,1))
+
