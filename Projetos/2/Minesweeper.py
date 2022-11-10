@@ -102,7 +102,7 @@ def gera_numero_aleatorio(generator,max):
     '''
     Returns a random number between 1 and max
 
-    generator ->
+    generator -> gerador
     max -> int
     return -> int
     '''
@@ -114,7 +114,7 @@ def gera_carater_aleatorio(generator,max):
     '''
     Returns a random character between 'A' and the uppercase character max
 
-    generator -> generator TAD
+    generator -> gerador
     max -> str
     return -> str
     '''
@@ -138,7 +138,7 @@ def cria_coordenada(col,lin):
 
     col -> str
     lin -> int
-    return -> tuple(str,int)
+    return -> coordenada
     '''
     if(type(col) != str or len(col) != 1 or type(lin) != int or not('A' <= col <= 'Z') or not(1 <= lin <= 99)):
         raise ValueError("cria_coordenada: argumentos invalidos")
@@ -149,7 +149,7 @@ def obtem_coluna(coordinate):
     '''
     Returns the column value of the given coordinate
 
-    coordinate -> tuple(str,int)
+    coordinate -> coordenada
     return -> str
     '''
     return coordinate[0]
@@ -158,7 +158,7 @@ def obtem_linha(coordinate):
     '''
     Returns the line value of the given coordinate
 
-    coordinate -> tuple(str,int)
+    coordinate -> coordenada
     return -> int
     '''
     return coordinate[1]
@@ -177,7 +177,7 @@ def coordenadas_iguais(c1,c2):
     '''
     Returns True if both coordinates are equal
 
-    c1,c2 -> tuple(str,int)
+    c1,c2 -> coordenada
     return -> bool
     '''
     return (eh_coordenada(c1) and eh_coordenada(c2) and c1 == c2)
@@ -186,7 +186,7 @@ def coordenada_para_str(coordinate):
     '''
     Returns a string that represents the coordinate in the format: "(col)(lin)" or "(col)0(lin)", if lin is only 1 digit
 
-    coordinate -> tuple(str,int) = (col,lin)
+    coordinate -> coordenada
     return -> str
     '''
     if(coordinate[1] < 10):
@@ -200,7 +200,7 @@ def str_para_coordenada(c_as_text):
     Returns the coordinate represented by the given string
     
     c_as_text -> str
-    return -> tuple(str,int)
+    return -> coordenada
     '''
     if(c_as_text[1] == '0'):
         return (c_as_text[0],int(c_as_text[2]))
@@ -214,8 +214,8 @@ def obtem_coordenadas_vizinhas(coordinate):
     Returns a tuple containing the neighbour coordinates to the given coordinate, 
     starting in the upper-left diagonal position and iterating clockwise  
 
-    coordinate -> coordinate TAD
-    return -> tuple(coordinate TAD,coordinate TAD,....) 
+    coordinate -> coordenada
+    return -> tuple(coordenada) 
     '''
 
     def sumCol(amount):
@@ -247,9 +247,9 @@ def obtem_coordenada_aleatoria(coordinate, generator):
     Returns a random coordinate with a column value between 'A' and the given coordinate's column value
     and a line value between 1 and the given coordinate's line value.
 
-    coordinate -> coordinate TAD 
-    generator -> generator TAD
-    return -> coordinate TAD
+    coordinate -> coordenada
+    generator -> gerador
+    return -> coordenada
     '''
     col_random = gera_carater_aleatorio(generator,obtem_coluna(coordinate))
     lin_random = gera_numero_aleatorio(generator,obtem_linha(coordinate))
@@ -264,7 +264,7 @@ def cria_parcela():
     '''
     Returns a parcel that is both hidden and without a mine
     
-    return -> list[str,bool]
+    return -> parcela
     '''
     return ["tapada",False]
 
@@ -273,8 +273,8 @@ def cria_copia_parcela(parcel):
     '''
     Returns a copy of the given parcel 
 
-    parcel -> list[str,bool]
-    return -> list[str,bool]
+    parcel -> parcela
+    return -> parcela
     '''
     return parcel.copy()
 
@@ -282,8 +282,8 @@ def limpa_parcela(parcel):
     '''
     Modifies the state of the given parcel to "limpa" and then returns it
 
-    parcel -> list[str,bool]
-    return -> list[str,bool]
+    parcel -> parcela
+    return -> parcela
     '''
     parcel[0] = "limpa"
     return parcel
@@ -292,8 +292,8 @@ def marca_parcela(parcel):
     '''
     Modifies the state of the given parcel to "marcada" and then returns it
 
-    parcel -> list[str,bool]
-    return -> list[str,bool]
+    parcel -> parcela
+    return -> parcela
     '''
     parcel[0] = "marcada"
     return parcel
@@ -302,8 +302,8 @@ def desmarca_parcela(parcel):
     '''
     Modifies the state of the given parcel to "tapada" and then returns it
 
-    parcel -> list[str,bool]
-    return -> list[str,bool]
+    parcel -> parcela
+    return -> parcela
     '''
     parcel[0] = "tapada"
     return parcel
@@ -312,8 +312,8 @@ def esconde_mina(parcel):
     '''
     Hides a mine in the given parcel (changes its isThereMine variable to True) and returns it
 
-    parcel -> list[str,bool]
-    return -> list[str,bool]
+    parcel -> parcela
+    return -> parcela
     '''
     parcel[1] = True
     return parcel
@@ -334,7 +334,7 @@ def eh_parcela_tapada(parcel):
     '''
     Returns True if the state of the given parcel is "tapada"
     
-    parcel -> list[str,bool]
+    parcel -> parcela
     return -> bool
     '''
     return (parcel[0] == "tapada")
@@ -344,7 +344,7 @@ def eh_parcela_marcada(parcel):
     '''
     Returns True if the state of the given parcel is "marcada"
     
-    parcel -> list[str,bool]
+    parcel -> parcela
     return -> bool
     '''
     return (parcel[0] == "marcada")
@@ -353,7 +353,7 @@ def eh_parcela_limpa(parcel):
     '''
     Returns True if the state of the given parcel is "limpa"
     
-    parcel -> list[str,bool]
+    parcel -> parcela
     return -> bool
     '''
     return (parcel[0] == "limpa")
@@ -362,7 +362,7 @@ def eh_parcela_minada(parcel):
     '''
     Returns True if the given parcel is hiding a mine
     
-    parcel -> list[str,bool]
+    parcel -> parcela
     return -> bool
     '''
     return parcel[1]
@@ -371,8 +371,8 @@ def parcelas_iguais(p1,p2):
     '''
     Returns True if both parcels are equal
 
-    p1 -> list[str,bool]
-    p2 -> list[str,bool]
+    p1 -> parcela
+    p2 -> parcela
     return -> bool
     '''
     return (eh_parcela(p1) and eh_parcela(p2) and p1 == p2)
@@ -386,7 +386,7 @@ def parcela_para_str(parcel):
     - '?' for parcels with state "limpa" and not hiding a mine
     - 'X' for parcels with state "limpa" and hiding a mine
     
-    parcel -> list[str,bool]
+    parcel -> parcela
     return -> str
     '''
     state = parcel[0]
@@ -408,7 +408,7 @@ def alterna_bandeira(parcel):
     Modifies the given parcel state to "marcada" if it previously was "tapada" and vice-versa ("tapada" if "marcada")
     Otherwise doesn't modify the given parcel. Returns True if the given parcel was destructively modified.
 
-    parcel -> parcel TAD
+    parcel -> parcela
     return -> bool
     '''
 
@@ -433,7 +433,7 @@ def cria_campo(last_col,last_lin):
 
     last_col -> str
     last_lin -> int
-    return -> list[list[parcela]] = campo 
+    return -> campo 
     '''
     if(type(last_col) != str or len(last_col) != 1 or type(last_lin) != int or not('A' <= last_col <= 'Z') or not(1 <= last_lin <= 99)):
         raise ValueError("cria_campo: argumentos invalidos")
@@ -448,16 +448,16 @@ def cria_copia_campo(field):
     field -> campo
     return -> campo
     '''
-    #return field.copy()
-    copia = cria_campo(obtem_ultima_coluna(field),obtem_ultima_linha(field))
+    
+    field_copy = cria_campo(obtem_ultima_coluna(field),obtem_ultima_linha(field))
     for line in range(obtem_ultima_linha(field)):
         for column in range(colParaIndex(obtem_ultima_coluna(field))):
-            coordenada_atual = cria_coordenada(IndexParaCol(column),line+1)
-            p_copia = obtem_parcela(copia,coordenada_atual)
-            p_campo = obtem_parcela(field,coordenada_atual)
-            if not parcelas_iguais(p_copia,p_campo):
-                p_copia = p_campo
-    return copia
+            coordinate = cria_coordenada(IndexParaCol(column),line+1)
+            p_field_copy = obtem_parcela(field_copy,coordinate)
+            p_field = obtem_parcela(field,coordinate)
+            if not parcelas_iguais(p_field_copy,p_field):
+                p_field_copy = p_field
+    return field_copy
 
 def obtem_ultima_coluna(field):
     '''
@@ -522,7 +522,7 @@ def obtem_coordenadas(field,state):
     return res
 
 
-def obtem_numero_minas_vizinhas(field, coordinate): # Could do in another way
+def obtem_numero_minas_vizinhas(field, coordinate): 
     '''
     Returns the number of neighbour parcels hiding mines 
 
@@ -674,7 +674,7 @@ def jogo_ganho(field):
     field -> campo
     return -> bool
     '''
-    #se não houverem parcelas "marcadas" nem parcelas "tapadas" NÃO MINADAS então o jogo terminou
+    #If there aren't any parcels with state "marcada" nor "tapada" that aren't mined then the game ends in a victory
     return not(len(obtem_coordenadas(field,"marcadas")) + (len(obtem_coordenadas(field,"tapadas"))-len(obtem_coordenadas(field,"minadas"))))
  
 
