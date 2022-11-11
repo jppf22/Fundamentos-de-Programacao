@@ -518,7 +518,7 @@ def obtem_coordenadas(field,state):
     max_col = obtem_ultima_coluna(field)
     res = ()
     for line in range(max_lin):
-        res += tuple(cria_coordenada(IndexParaCol(y),line+1) for y in range(colParaIndex(max_col)+1) if func(field[line][y]))
+        res += tuple(cria_coordenada(IndexParaCol(column),line+1) for column in range(colParaIndex(max_col)+1) if func(field[line][column]))
     return res
 
 
